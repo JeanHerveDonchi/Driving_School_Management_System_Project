@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace DrivingSchoolManagementSystem
 {
@@ -43,6 +45,21 @@ namespace DrivingSchoolManagementSystem
             dr[valueMember] = DBNull.Value;
             dt.Rows.InsertAt(dr, 0);
         }
+
+        public static void ClearStatusStripLabel(ToolStripStatusLabel label)
+        {
+            label.Text = string.Empty;
+        }
+
+        //public static void DisplayCurrentPosition(ToolStripStatusLabel label, int rowNumber, int totalRowCount)
+        //{
+        //    label.Text = $"{rowNumber} of {totalRowCount} records.";
+        //}
+
+        //public static void DisplayStatusRow(ToolStripStatusLabel label, string status)
+        //{
+        //    label.Text = $"{status}...";
+        //}
     }
     
 }

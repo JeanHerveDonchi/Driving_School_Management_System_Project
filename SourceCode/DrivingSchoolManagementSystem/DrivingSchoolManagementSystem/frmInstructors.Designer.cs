@@ -28,12 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             label1 = new Label();
             grpInstructors = new GroupBox();
+            txtAge = new TextBox();
+            Age = new Label();
             txtAddress = new TextBox();
             label11 = new Label();
-            txtAge = new TextBox();
-            label10 = new Label();
             txtLicenceNumber = new TextBox();
             label9 = new Label();
             txtEmail = new TextBox();
@@ -59,10 +60,9 @@
             btnPrevious = new Button();
             btnNext = new Button();
             btnLast = new Button();
-            statusStrip1 = new StatusStrip();
-            toolStripProgressBar1 = new ToolStripProgressBar();
+            errorProvider1 = new ErrorProvider(components);
             grpInstructors.SuspendLayout();
-            statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -77,10 +77,10 @@
             // 
             // grpInstructors
             // 
+            grpInstructors.Controls.Add(txtAge);
+            grpInstructors.Controls.Add(Age);
             grpInstructors.Controls.Add(txtAddress);
             grpInstructors.Controls.Add(label11);
-            grpInstructors.Controls.Add(txtAge);
-            grpInstructors.Controls.Add(label10);
             grpInstructors.Controls.Add(txtLicenceNumber);
             grpInstructors.Controls.Add(label9);
             grpInstructors.Controls.Add(txtEmail);
@@ -99,42 +99,45 @@
             grpInstructors.Controls.Add(label2);
             grpInstructors.Location = new Point(109, 55);
             grpInstructors.Name = "grpInstructors";
-            grpInstructors.Size = new Size(620, 617);
+            grpInstructors.Size = new Size(620, 611);
             grpInstructors.TabIndex = 1;
             grpInstructors.TabStop = false;
             grpInstructors.Text = "Instructor Details";
             // 
+            // txtAge
+            // 
+            txtAge.Location = new Point(46, 489);
+            txtAge.Name = "txtAge";
+            txtAge.ReadOnly = true;
+            txtAge.Size = new Size(534, 23);
+            txtAge.TabIndex = 21;
+            // 
+            // Age
+            // 
+            Age.AutoSize = true;
+            Age.Location = new Point(46, 471);
+            Age.Name = "Age";
+            Age.Size = new Size(31, 15);
+            Age.TabIndex = 20;
+            Age.Text = "Age:";
+            // 
             // txtAddress
             // 
-            txtAddress.Location = new Point(43, 545);
+            txtAddress.Location = new Point(43, 544);
             txtAddress.Name = "txtAddress";
             txtAddress.Size = new Size(537, 23);
             txtAddress.TabIndex = 19;
+            txtAddress.Tag = "Address";
+            txtAddress.Validating += txt_Validating;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(46, 527);
+            label11.Location = new Point(46, 526);
             label11.Name = "label11";
             label11.Size = new Size(52, 15);
             label11.TabIndex = 18;
             label11.Text = "Address:";
-            // 
-            // txtAge
-            // 
-            txtAge.Location = new Point(46, 490);
-            txtAge.Name = "txtAge";
-            txtAge.Size = new Size(534, 23);
-            txtAge.TabIndex = 17;
-            // 
-            // label10
-            // 
-            label10.AutoSize = true;
-            label10.Location = new Point(46, 472);
-            label10.Name = "label10";
-            label10.Size = new Size(31, 15);
-            label10.TabIndex = 16;
-            label10.Text = "Age:";
             // 
             // txtLicenceNumber
             // 
@@ -142,6 +145,8 @@
             txtLicenceNumber.Name = "txtLicenceNumber";
             txtLicenceNumber.Size = new Size(534, 23);
             txtLicenceNumber.TabIndex = 15;
+            txtLicenceNumber.Tag = "Licence Number";
+            txtLicenceNumber.Validating += txt_Validating;
             // 
             // label9
             // 
@@ -158,6 +163,8 @@
             txtEmail.Name = "txtEmail";
             txtEmail.Size = new Size(537, 23);
             txtEmail.TabIndex = 13;
+            txtEmail.Tag = "Email";
+            txtEmail.Validating += txt_Validating;
             // 
             // label8
             // 
@@ -171,9 +178,12 @@
             // dteHired
             // 
             dteHired.Location = new Point(43, 273);
+            dteHired.MinDate = new DateTime(2015, 1, 1, 0, 0, 0, 0);
             dteHired.Name = "dteHired";
             dteHired.Size = new Size(200, 23);
             dteHired.TabIndex = 11;
+            dteHired.Tag = "Hired Date";
+            dteHired.Validating += dte_Validating;
             // 
             // label7
             // 
@@ -190,6 +200,8 @@
             txtPhone.Name = "txtPhone";
             txtPhone.Size = new Size(537, 23);
             txtPhone.TabIndex = 9;
+            txtPhone.Tag = "Phone Number";
+            txtPhone.Validating += txt_Validating;
             // 
             // label6
             // 
@@ -203,9 +215,14 @@
             // dteBirth
             // 
             dteBirth.Location = new Point(43, 217);
+            dteBirth.MaxDate = new DateTime(2000, 12, 31, 0, 0, 0, 0);
+            dteBirth.MinDate = new DateTime(1964, 1, 1, 0, 0, 0, 0);
             dteBirth.Name = "dteBirth";
             dteBirth.Size = new Size(200, 23);
             dteBirth.TabIndex = 7;
+            dteBirth.Tag = "Date Of Birth";
+            dteBirth.Value = new DateTime(2000, 12, 31, 0, 0, 0, 0);
+            dteBirth.Validating += dte_Validating;
             // 
             // label5
             // 
@@ -222,6 +239,8 @@
             txtLastName.Name = "txtLastName";
             txtLastName.Size = new Size(537, 23);
             txtLastName.TabIndex = 5;
+            txtLastName.Tag = "Last Name";
+            txtLastName.Validating += txt_Validating;
             // 
             // label4
             // 
@@ -238,6 +257,8 @@
             txtFirstName.Name = "txtFirstName";
             txtFirstName.Size = new Size(537, 23);
             txtFirstName.TabIndex = 3;
+            txtFirstName.Tag = "First Name";
+            txtFirstName.Validating += txt_Validating;
             // 
             // label3
             // 
@@ -267,7 +288,7 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(135, 688);
+            btnAdd.Location = new Point(136, 672);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(75, 33);
             btnAdd.TabIndex = 2;
@@ -277,7 +298,7 @@
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(260, 689);
+            btnDelete.Location = new Point(261, 673);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(75, 33);
             btnDelete.TabIndex = 3;
@@ -287,7 +308,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(382, 689);
+            btnSave.Location = new Point(383, 673);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 32);
             btnSave.TabIndex = 4;
@@ -297,7 +318,7 @@
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(628, 690);
+            btnExit.Location = new Point(629, 674);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(75, 32);
             btnExit.TabIndex = 5;
@@ -307,7 +328,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(502, 690);
+            btnCancel.Location = new Point(503, 674);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 32);
             btnCancel.TabIndex = 6;
@@ -317,7 +338,7 @@
             // 
             // btnFirst
             // 
-            btnFirst.Location = new Point(274, 755);
+            btnFirst.Location = new Point(275, 739);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(41, 32);
             btnFirst.TabIndex = 7;
@@ -327,7 +348,7 @@
             // 
             // btnPrevious
             // 
-            btnPrevious.Location = new Point(346, 755);
+            btnPrevious.Location = new Point(347, 739);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.Size = new Size(41, 32);
             btnPrevious.TabIndex = 8;
@@ -337,7 +358,7 @@
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(425, 755);
+            btnNext.Location = new Point(426, 739);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(41, 32);
             btnNext.TabIndex = 9;
@@ -347,7 +368,7 @@
             // 
             // btnLast
             // 
-            btnLast.Location = new Point(502, 755);
+            btnLast.Location = new Point(503, 739);
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(41, 32);
             btnLast.TabIndex = 10;
@@ -355,26 +376,15 @@
             btnLast.UseVisualStyleBackColor = true;
             btnLast.Click += Navigation_Handler;
             // 
-            // statusStrip1
+            // errorProvider1
             // 
-            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripProgressBar1 });
-            statusStrip1.Location = new Point(0, 798);
-            statusStrip1.Name = "statusStrip1";
-            statusStrip1.Size = new Size(845, 22);
-            statusStrip1.TabIndex = 11;
-            statusStrip1.Text = "statusStrip1";
-            // 
-            // toolStripProgressBar1
-            // 
-            toolStripProgressBar1.Name = "toolStripProgressBar1";
-            toolStripProgressBar1.Size = new Size(100, 16);
+            errorProvider1.ContainerControl = this;
             // 
             // frmInstructors
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(845, 820);
-            Controls.Add(statusStrip1);
+            ClientSize = new Size(845, 840);
             Controls.Add(btnLast);
             Controls.Add(btnNext);
             Controls.Add(btnPrevious);
@@ -391,8 +401,7 @@
             Load += frmInstructors_Load;
             grpInstructors.ResumeLayout(false);
             grpInstructors.PerformLayout();
-            statusStrip1.ResumeLayout(false);
-            statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -415,12 +424,10 @@
         private DateTimePicker dteHired;
         private Label label7;
         private TextBox txtEmail;
-        private Label label10;
         private TextBox txtLicenceNumber;
         private Label label9;
         private TextBox txtAddress;
         private Label label11;
-        private TextBox txtAge;
         private Button btnAdd;
         private Button btnDelete;
         private Button btnSave;
@@ -430,7 +437,8 @@
         private Button btnPrevious;
         private Button btnNext;
         private Button btnLast;
-        private StatusStrip statusStrip1;
-        private ToolStripProgressBar toolStripProgressBar1;
+        private ErrorProvider errorProvider1;
+        private TextBox txtAge;
+        private Label Age;
     }
 }

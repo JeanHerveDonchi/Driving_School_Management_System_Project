@@ -82,7 +82,8 @@
             toolStripSeparator2 = new ToolStripSeparator();
             helpToolStripButton = new ToolStripButton();
             statusStrip = new StatusStrip();
-            toolStripStatusLabel = new ToolStripStatusLabel();
+            tlstrpProgressBar = new ToolStripProgressBar();
+            tlstrpStatus = new ToolStripStatusLabel();
             toolTip = new ToolTip(components);
             menuStrip.SuspendLayout();
             toolStrip.SuspendLayout();
@@ -199,7 +200,7 @@
             // instructorsToolStripMenuItem
             // 
             instructorsToolStripMenuItem.Name = "instructorsToolStripMenuItem";
-            instructorsToolStripMenuItem.Size = new Size(180, 22);
+            instructorsToolStripMenuItem.Size = new Size(130, 22);
             instructorsToolStripMenuItem.Tag = "instructors";
             instructorsToolStripMenuItem.Text = "Instructors";
             instructorsToolStripMenuItem.Click += ShowNewForm;
@@ -207,7 +208,7 @@
             // studentsToolStripMenuItem
             // 
             studentsToolStripMenuItem.Name = "studentsToolStripMenuItem";
-            studentsToolStripMenuItem.Size = new Size(180, 22);
+            studentsToolStripMenuItem.Size = new Size(130, 22);
             studentsToolStripMenuItem.Tag = "students";
             studentsToolStripMenuItem.Text = "Students";
             studentsToolStripMenuItem.Click += ShowNewForm;
@@ -484,7 +485,7 @@
             // 
             // statusStrip
             // 
-            statusStrip.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel });
+            statusStrip.Items.AddRange(new ToolStripItem[] { tlstrpProgressBar, tlstrpStatus });
             statusStrip.Location = new Point(0, 501);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new Padding(1, 0, 16, 0);
@@ -492,11 +493,16 @@
             statusStrip.TabIndex = 2;
             statusStrip.Text = "StatusStrip";
             // 
-            // toolStripStatusLabel
+            // tlstrpProgressBar
             // 
-            toolStripStatusLabel.Name = "toolStripStatusLabel";
-            toolStripStatusLabel.Size = new Size(39, 17);
-            toolStripStatusLabel.Text = "Status";
+            tlstrpProgressBar.Name = "tlstrpProgressBar";
+            tlstrpProgressBar.Size = new Size(100, 16);
+            // 
+            // tlstrpStatus
+            // 
+            tlstrpStatus.Name = "tlstrpStatus";
+            tlstrpStatus.Size = new Size(39, 17);
+            tlstrpStatus.Text = "Status";
             // 
             // frmMDIParent
             // 
@@ -536,7 +542,6 @@
         private System.Windows.Forms.ToolStripMenuItem printSetupToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tileHorizontalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fileMenu;
@@ -578,6 +583,8 @@
         private ToolStripMenuItem maintenanceToolStripMenuItem;
         private ToolStripMenuItem instructorsToolStripMenuItem;
         private ToolStripMenuItem studentsToolStripMenuItem;
+        private ToolStripProgressBar tlstrpProgressBar;
+        private ToolStripStatusLabel tlstrpStatus;
     }
 }
 

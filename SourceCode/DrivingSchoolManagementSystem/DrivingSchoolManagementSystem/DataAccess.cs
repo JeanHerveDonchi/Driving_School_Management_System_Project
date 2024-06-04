@@ -14,7 +14,7 @@ namespace DrivingSchoolManagementSystem
         public static DataTable GetData(string sqlQuery)
         {
             DataTable dt = new DataTable();
-            using (SqlConnection conn = new SqlConnection(getConnectionString()))
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
                 {
@@ -32,7 +32,7 @@ namespace DrivingSchoolManagementSystem
             string sqlQuery = string.Join(";", sqlQueries);
 
             DataSet ds = new DataSet();
-            using (SqlConnection conn = new SqlConnection(getConnectionString()))
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand(sqlQuery, conn))
                 {
@@ -49,7 +49,7 @@ namespace DrivingSchoolManagementSystem
         {
             int rowsAffected;
 
-            using (SqlConnection conn = new SqlConnection(getConnectionString()))
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
@@ -64,7 +64,7 @@ namespace DrivingSchoolManagementSystem
 
         public static object GetValue(string sql)
         {
-            using (SqlConnection conn = new SqlConnection(getConnectionString()))
+            using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
@@ -79,7 +79,7 @@ namespace DrivingSchoolManagementSystem
             }
         }
 
-        private static string getConnectionString()
+        private static string GetConnectionString()
         {
             string connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
             return connectionString;

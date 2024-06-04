@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+﻿using System.Runtime.CompilerServices;
 
 namespace DrivingSchoolManagementSystem
 {
@@ -40,7 +32,7 @@ namespace DrivingSchoolManagementSystem
                 case "courses":
                     //childForm = new frmCourses();
                     //break;
-                    throw new NotImplementedException();            
+                    throw new NotImplementedException();
             }
             if (childForm != null)
             {
@@ -153,6 +145,8 @@ namespace DrivingSchoolManagementSystem
             {
                 this.Close();
             }
+
+            tlstrpStatus.Text = "Ready...";
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Jean Herve Donchi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+556d2ebe039e4d583480daf1b5ab6701cca0a204")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0+c69d8f4be440ec7b425574211f202259bd2ad47d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Driving School Management System")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DrivingSchoolManagementSystem")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
