@@ -25,8 +25,6 @@ namespace DrivingSchoolManagementSystem
         private int rowNumber;
         private int totalRowCount;
         private FormState currentState;
-        private ToolStripStatusLabel toolStripLabel;
-        private ToolStripProgressBar toolStripProgressBar;
 
         #endregion
         public frmInstructors()
@@ -34,41 +32,278 @@ namespace DrivingSchoolManagementSystem
             InitializeComponent();
         }
 
+        #region Event Handlers
         private void Navigation_Handler(object sender, EventArgs e)
         {
-            UIUtilities.ClearStatusStripLabel(toolStripLabel);
+            try
+            {
+                ClearParentStatusStrip();
 
-            if (sender == btnFirst)
-            {
-                currentId = firstId;
-            }
-            else if (sender == btnLast)
-            {
-                currentId = lastId;
-            }
-            else if (sender == btnNext)
-            {
-                if (nextId != null)
-                    currentId = nextId.Value;
-                else
-                    MessageBox.Show("The last  is currently displayed");
+                if (sender == btnFirst)
+                {
+                    currentId = firstId;
+                }
+                else if (sender == btnLast)
+                {
+                    currentId = lastId;
+                }
+                else if (sender == btnNext)
+                {
+                    if (nextId != null)
+                        currentId = nextId.Value;
+                    else
+                        MessageBox.Show("The last  is currently displayed");
 
-            }
-            else if (sender == btnPrevious)
-            {
-                if (previousId != null)
-                    currentId = previousId.Value;
+                }
+                else if (sender == btnPrevious)
+                {
+                    if (previousId != null)
+                        currentId = previousId.Value;
+                    else
+                        MessageBox.Show("The first  is currently displayed");
+                }
                 else
-                    MessageBox.Show("The first  is currently displayed");
+                {
+                    return;
+                }
+
+                LoadCurrentPosition();
+                DisplayCurrentInstructor();
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void frmInstructors_Load(object sender, EventArgs e)
+        {
+            try
+            {
+                SetState(FormState.View);
+                LoadFirstInstructor();
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SetState(FormState.Add);
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure you want to delete this Instructor?", "Are you sure",
+               MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                try
+                {
+                    DeleteInstructor();
+                    LoadFirstInstructor();
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show("Sql Related Error: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    DisplayExceptionMessage(ex);
+                }
+            }
+        }
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (currentState == FormState.View)
+                {
+                    SetState(FormState.Edit);
+                }
+                else
+                {
+                    if (ValidateChildren())    // Just Temporary
+                    {
+                        if (txtId.Text == string.Empty)
+                        {
+                            //add
+                            CreateInstructor();      
+                        }
+                        else
+                        {
+                            //edit
+                            UpdateInstructor();
+                        }
+                        LoadFirstInstructor();
+                        SetState(FormState.View);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please resolve your validation errors");
+                    }
+                }
+            }
+            catch (SqlException ex)
+            {
+                MessageBox.Show("Sql Related Error: " + ex.Message + " - SQL Exception");
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                SetState(FormState.View);
+                DisplayCurrentInstructor();
+                DisplayCurrentPositionOnStripLabel(rowNumber, totalRowCount);
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        #endregion
+
+        #region Form State
+        private void SetState(FormState state)
+        {
+            currentState = state;
+            LoadState(state);
+        }
+
+        private void LoadState(FormState state)
+        {
+            if (state == FormState.View)
+            {
+                btnAdd.Enabled = true;
+                btnCancel.Enabled = false;
+                btnDelete.Enabled = true;
+                btnSave.Text = "Edit";
+                InputsReadOnly(true);
+                NavigationButtonManagement();
+                errorProvider1.Clear();
             }
             else
             {
-                return;
+                btnAdd.Enabled = false;
+                btnCancel.Enabled = true;
+                btnDelete.Enabled = false;
+                btnSave.Text = "Save";
+                InputsReadOnly(false);
+                DisplayStatusRow("Updating");
+                if (state == FormState.Add)
+                {
+                    DisplayStatusRow("Adding");
+                    grpInstructors.ClearChildControls(-1);
+                }
+                DisableNavigation();
             }
+        }
 
+        private void InputsReadOnly(bool v)
+        {
+            txtFirstName.ReadOnly = v;
+            txtLastName.ReadOnly = v;
+            dteBirth.Enabled = !v;
+            dteHired.Enabled = !v;
+            txtPhone.ReadOnly = v;
+            txtEmail.ReadOnly = v;
+            txtLicenceNumber.ReadOnly = v;
+            //txtAge.ReadOnly = v;
+            txtAddress.ReadOnly = v;
+        }
+
+        #endregion
+
+        #region Load Data
+
+        private void LoadFirstInstructor()
+        {
+            currentId = GetFirstInstructorId();
             LoadCurrentPosition();
             DisplayCurrentInstructor();
         }
+
+        private void LoadCurrentPosition()
+        {
+            DataRow positionInfoRow = GetPositionDataRow(currentId);
+            LoadPositionInfo(positionInfoRow);
+            DisplayCurrentPositionOnStripLabel(rowNumber, totalRowCount);
+            NavigationButtonManagement();
+        }
+
+        private void LoadPositionInfo(DataRow positionInfoRow)
+        {
+            currentId = Convert.ToInt32(positionInfoRow["InstructorId"]);
+            firstId = Convert.ToInt32(positionInfoRow["FirstInstructorId"]);
+            lastId = Convert.ToInt32(positionInfoRow["LastInstructorId"]);
+            rowNumber = Convert.ToInt32(positionInfoRow["RowNumber"]);
+            totalRowCount = Convert.ToInt32(positionInfoRow["TotalRowCount"]);
+
+            nextId = positionInfoRow["NextInstructorId"] != DBNull.Value ?
+                Convert.ToInt32(positionInfoRow["NextInstructorId"]) : null;
+
+            previousId = positionInfoRow["PreviousInstructorId"] != DBNull.Value ?
+                Convert.ToInt32(positionInfoRow["PreviousInstructorId"]) : null;
+        }
+
+        #endregion
+
+        #region Navigation Management
+
+        private void NavigationButtonManagement()
+        {
+            try
+            {
+                btnPrevious.Enabled = previousId != null;
+                btnNext.Enabled = nextId != null;
+
+                btnFirst.Enabled = currentId != firstId;
+                btnLast.Enabled = currentId != lastId;
+            }
+            catch (Exception ex)
+            {
+                DisplayExceptionMessage(ex);
+            }
+        }
+
+        private void DisableNavigation()
+        {
+            btnPrevious.Enabled = false;
+            btnNext.Enabled = false;
+            btnFirst.Enabled = false;
+            btnLast.Enabled = false;
+        }
+
+        #endregion
+
+        #region Display DataRow
 
         private void DisplayCurrentInstructor()
         {
@@ -90,6 +325,122 @@ namespace DrivingSchoolManagementSystem
             txtAddress.Text = currentInstructorRow["Address"].ToString();
         }
 
+        #endregion
+
+        #region CRUD operations(Send Data)
+        private void DeleteInstructor()
+        {
+            string sqlDelete = $"DELETE FROM Instructors WHERE InstructorID = {txtId.Text}";
+
+            int rowsAffected = DataAccess.SendData(sqlDelete);
+
+            if (rowsAffected == 0)
+            {
+                MessageBox.Show("The database reported no rows affected, meaning the changes weren't saved");
+            }
+            else if (rowsAffected == 1)
+            {
+                MessageBox.Show("Instructor deleted successfully");
+            }
+            else
+            {
+                // CONNECTION KIND OF ERROR
+                MessageBox.Show("Error Occured: Something went wrong please verify your data");
+            }
+        }
+        private void UpdateInstructor()
+        {
+            int age = HelperMethods.CalculateAge(dteBirth.Value);
+            if (!Validator.ValidateInstructorAge(age))
+            {
+                //this would not normally happen
+                throw new InvalidOperationException("Error on age, must be between 24 and 60");
+            }
+            string sqlUpdateInstructor = $@"UPDATE Instructors
+                        SET FirstName = '{txtFirstName.Text.Trim()}', 
+                            LastName = '{txtLastName.Text.Trim()}', 
+                            DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}', 
+                            HiredDate = '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}', 
+                            PhoneNumber = '{txtPhone.Text}', 
+                            Email = '{txtEmail.Text}', 
+                            LicenceNumber = {txtLicenceNumber.Text}, 
+                            Age = {age}, 
+                            Address = '{txtAddress.Text}'
+                        WHERE InstructorID = {txtId.Text}";
+
+
+            int rowsAffected = DataAccess.SendData(sqlUpdateInstructor);
+            if (rowsAffected == 0)
+            {
+                MessageBox.Show("The database reported no rows affected, meaning the changes weren't saved");
+            }
+            else if (rowsAffected == 1)
+            {
+                MessageBox.Show("Instructor updated successfully");
+            }
+            else
+            {
+                // CONNECTION KIND OF ERROR
+                MessageBox.Show("Error Occured: Something went wrong please verify your data");
+            }
+        }
+
+        private void CreateInstructor()
+        {
+            int age = HelperMethods.CalculateAge(dteBirth.Value);
+            if (!Validator.ValidateInstructorAge(age))
+            {
+                //this would not normally happen
+                throw new InvalidOperationException("Error on age, must be between 24 and 60");
+            }
+            string sqlInsertInstructors = $@"INSERT INTO Instructors 
+                        (FirstName, LastName,
+                            DateOfBirth, HiredDate,
+                            PhoneNumber, Email,
+                            LicenceNumber, Age,
+                            Address
+                            )
+                        VALUES (
+                                '{txtFirstName.Text.Trim()}',
+                                '{txtLastName.Text.Trim()}',
+                                '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
+                                '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}',
+                                '{txtPhone.Text}',
+                                '{txtEmail.Text}',
+                                {txtLicenceNumber.Text},
+                                {age},
+                                '{txtAddress.Text}'
+                                )";
+            int rowsAffected = DataAccess.SendData(sqlInsertInstructors);
+
+            if (rowsAffected == 1)
+            {
+                MessageBox.Show("Instructor created.");
+            }
+            else if (rowsAffected == 0)
+            {
+                MessageBox.Show("Error occured: The database reported no rows affected, meaning the changes weren't saved");
+
+            }
+            else
+            {
+                MessageBox.Show("Error Occured: Something went wrong please verify your data");
+            }
+        }
+        #endregion
+
+        #region Get/Retrieve Data
+
+        private int GetFirstInstructorId()
+        {
+            int id = Convert.ToInt32(DataAccess.GetValue("SELECT TOP (1) InstructorID FROM Instructors ORDER BY LastName"));
+            return id;
+        }
+
+        #endregion
+
+        #region Get Data Row
+
         private DataRow GetInstructorDataRow(int currentId)
         {
             string sqlInstructorById = $"SELECT * FROM Instructors WHERE InstructorID = {currentId}";
@@ -97,38 +448,6 @@ namespace DrivingSchoolManagementSystem
             DataTable dt = DataAccess.GetData(sqlInstructorById);
 
             return dt.Rows[0];
-        }
-
-        private void LoadCurrentPosition()
-        {
-            DataRow positionInfoRow = GetPositionDataRow(currentId);
-            LoadPositionInfo(positionInfoRow);
-            DisplayCurrentPositionOnStripLabel(rowNumber, totalRowCount);
-            NavigationButtonManagement();
-        }
-
-        private void NavigationButtonManagement()
-        {
-            btnPrevious.Enabled = previousId != null;
-            btnNext.Enabled = nextId != null;
-
-            btnFirst.Enabled = currentId != firstId;
-            btnLast.Enabled = currentId != lastId;
-        }
-
-        private void LoadPositionInfo(DataRow positionInfoRow)
-        {
-            currentId = Convert.ToInt32(positionInfoRow["InstructorId"]);
-            firstId = Convert.ToInt32(positionInfoRow["FirstInstructorId"]);
-            lastId = Convert.ToInt32(positionInfoRow["LastInstructorId"]);
-            rowNumber = Convert.ToInt32(positionInfoRow["RowNumber"]);
-            totalRowCount = Convert.ToInt32(positionInfoRow["TotalRowCount"]);
-
-            nextId = positionInfoRow["NextInstructorId"] != DBNull.Value ?
-                Convert.ToInt32(positionInfoRow["NextInstructorId"]) : null;
-
-            previousId = positionInfoRow["PreviousInstructorId"] != DBNull.Value ?
-                Convert.ToInt32(positionInfoRow["PreviousInstructorId"]) : null;
         }
 
         private DataRow GetPositionDataRow(int currentId)
@@ -164,342 +483,20 @@ namespace DrivingSchoolManagementSystem
             return dt.Rows[0];
         }
 
-        private void frmInstructors_Load(object sender, EventArgs e)
-        {
-            LoadToolStrip();
-            SetState(FormState.View);
-            LoadFirstInstructor();
-
-
-        }
-
-        private void LoadFirstInstructor()
-        {
-            currentId = GetFirstInstructorId();
-            LoadCurrentPosition();
-            DisplayCurrentInstructor();
-        }
-
-        private int GetFirstInstructorId()
-        {
-            int id = Convert.ToInt32(DataAccess.GetValue("SELECT TOP (1) InstructorID FROM Instructors ORDER BY LastName"));
-            return id;
-        }
-
-        private void SetState(FormState state)
-        {
-            currentState = state;
-            LoadState(state);
-        }
-
-        private void LoadState(FormState state)
-        {
-            if (state == FormState.View)
-            {
-                btnAdd.Enabled = true;
-                btnCancel.Enabled = false;
-                btnDelete.Enabled = true;
-                btnSave.Text = "Edit";
-                InputsReadOnly(true);
-                NavigationButtonManagement();
-            }
-            else
-            {
-                btnAdd.Enabled = false;
-                btnCancel.Enabled = true;
-                btnDelete.Enabled = false;
-                btnSave.Text = "Save";
-                InputsReadOnly(false);
-                DisplayStatusRow("Updating");
-                if (state == FormState.Add)
-                {
-                    DisplayStatusRow("Adding");
-                    grpInstructors.Controls.ClearControls();
-                }
-                DisableNavigation();
-            }
-        }
-
-        private void DisableNavigation()
-        {
-            btnPrevious.Enabled = false;
-            btnNext.Enabled = false;
-            btnFirst.Enabled = false;
-            btnLast.Enabled = false;
-        }
-
-        private void InputsReadOnly(bool v)
-        {
-            txtFirstName.ReadOnly = v;
-            txtLastName.ReadOnly = v;
-            dteBirth.Enabled = !v;
-            dteHired.Enabled = !v;
-            txtPhone.ReadOnly = v;
-            txtEmail.ReadOnly = v;
-            txtLicenceNumber.ReadOnly = v;
-            //txtAge.ReadOnly = v;
-            txtAddress.ReadOnly = v;
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            SetState(FormState.Add);
-        }
-
-        private void btnDelete_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure you want to delete this Instructor?", "Are you sure",
-               MessageBoxButtons.YesNo) == DialogResult.Yes)
-            {
-                try
-                {
-                    LoadTaskBar();
-                    DeleteInstructor();
-                    ResetTaskBar();
-                    LoadFirstInstructor();
-                }
-                catch (SqlException ex)
-                {
-                    MessageBox.Show("Sql Related Error: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message, ex.GetType().ToString());
-                }
-            }
-        }
-
-        private void DeleteInstructor()
-        {
-            string sqlDelete = $"DELETE FROM Instructors WHERE InstructorID = {txtId.Text}";
-
-            int rowsAffected = DataAccess.SendData(sqlDelete);
-
-            if (rowsAffected == 1)
-            {
-                MessageBox.Show("Instructor was deleted");
-            }
-            else
-            {
-                MessageBox.Show("The database reported no rows affected");
-            }
-        }
-
-        private void btnSave_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (currentState == FormState.View)
-                {
-                    SetState(FormState.Edit);
-                }
-                else
-                {
-                    if (ValidateChildren())
-                    {
-                        if (txtId.Text == string.Empty)
-                        {
-                            //add instructor
-                            LoadTaskBar();
-                            CreateInstructor();
-                            ResetTaskBar();
-                            LoadFirstInstructor();
-                        }
-                        else
-                        {
-                            //edit instructor
-                            LoadTaskBar();
-                            UpdateInstructor();
-                            ResetTaskBar();
-                            LoadFirstInstructor();
-                        }
-                        SetState(FormState.View);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Please resolve your validation errors");
-                    }
-                }
-            }
-            catch (SqlException ex)
-            {
-                MessageBox.Show("Sql Related Error: " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, ex.GetType().ToString());
-            }
-        }
-
-        private void UpdateInstructor()
-        {
-            int age = HelperMethods.CalculateAge(new DateTime(dteBirth.Value.Year, dteBirth.Value.Month, dteBirth.Value.Day));
-            if (!Validator.ValidateInstructorAge(age))
-            {
-                //this would not normally happen
-                throw new InvalidOperationException("Error on age, must be between 24 and 60");
-            }
-            string sqlUpdateInstructor = $@"UPDATE Instructors
-                        SET FirstName = '{txtFirstName.Text.Trim()}', 
-                            LastName = '{txtLastName.Text.Trim()}', 
-                            DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}', 
-                            HiredDate = '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}', 
-                            PhoneNumber = '{txtPhone.Text}', 
-                            Email = '{txtEmail.Text}', 
-                            LicenceNumber = {txtLicenceNumber.Text}, 
-                            Age = {age}, 
-                            Address = '{txtAddress.Text}'
-                        WHERE InstructorID = {txtId.Text}";
-
-
-            int rowsAffected = DataAccess.SendData(sqlUpdateInstructor);
-            if (rowsAffected == 0)
-            {
-                MessageBox.Show("The database reported no rows affected, meaning the changes weren't saved");
-            }
-            else if (rowsAffected == 1)
-            {
-                MessageBox.Show("Instructor updated successfully");
-            }
-            else
-            {
-                // 
-                MessageBox.Show("Something went wrong please verify your data");
-            }
-        }
-
-        private void CreateInstructor()
-        {
-            int age = HelperMethods.CalculateAge(new DateTime(dteBirth.Value.Year, dteBirth.Value.Month, dteBirth.Value.Day));
-            if (!Validator.ValidateInstructorAge(age))
-            {
-                //this would not normally happen
-                throw new InvalidOperationException("Error on age, must be between 24 and 60");
-            }
-            string sqlInsertInstructors = $@"INSERT INTO Instructors 
-                        (FirstName, LastName,
-                            DateOfBirth, HiredDate,
-                            PhoneNumber, Email,
-                            LicenceNumber, Age,
-                            Address
-                            )
-                        VALUES (
-                                '{txtFirstName.Text.Trim()}',
-                                '{txtLastName.Text.Trim()}',
-                                '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
-                                '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}',
-                                '{txtPhone.Text}',
-                                '{txtEmail.Text}',
-                                {txtLicenceNumber.Text},
-                                {age},
-                                '{txtAddress.Text}'
-                                )";
-            int rowsAffected = DataAccess.SendData(sqlInsertInstructors);
-
-            if (rowsAffected == 1)
-            {
-                MessageBox.Show("Instructor created.");
-            }
-            else
-            {
-                MessageBox.Show("The database reported no rows affected.");
-            }
-        }
-
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            SetState(FormState.View);
-            DisplayCurrentInstructor();
-            DisplayCurrentPositionOnStripLabel(rowNumber, totalRowCount);
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
-        {
-            this.Close();
-        }
+        #endregion
 
         #region ToolStrip Methods
-
-        private void LoadToolStripLabel()
+        public void DisplayCurrentPositionOnStripLabel(int rowNumber, int totalRowCount)
         {
-            if (MdiParent is null)
-            {
-                throw new InvalidOperationException("Verify Mdi Parent form");
-            }
-            StatusStrip parentStatusStrip = (StatusStrip)MdiParent.Controls.Find("statusStrip", true).FirstOrDefault()!;
-            if (parentStatusStrip is null)
-            {
-                throw new InvalidOperationException("Controls of mdi form does not contain tool" +
-                    " strip with 'statusStrip' name");
-            }
-            ToolStripStatusLabel? mdiToolStripLabel = parentStatusStrip.Items.Find("tlstrpStatus", true).FirstOrDefault()
-                                                        as ToolStripStatusLabel;
-
-            if (mdiToolStripLabel is null)
-            {
-                throw new InvalidOperationException("Controls of mdi form does not contain tool" +
-                    " strip label with 'tlstrpStatus' name");
-            }
-            toolStripLabel = mdiToolStripLabel;
+            this.DisplayParentStatusStripMessage($"{rowNumber} of {totalRowCount} records.") ;
         }
-        private void LoadToolStripProgressBar()
+        public void DisplayStatusRow(string status)
         {
-            if (MdiParent is null)
-            {
-                throw new InvalidOperationException("Verify Mdi Parent form");
-            }
-            StatusStrip parentStatusStrip = (StatusStrip)MdiParent.Controls.Find("statusStrip", true).FirstOrDefault()!;
-            if (parentStatusStrip is null)
-            {
-                throw new InvalidOperationException("Controls of mdi form does not contain tool" +
-                    " strip with 'statusStrip' name");
-            }
-            ToolStripProgressBar? mdiToolStripProgressBar = parentStatusStrip.Items.Find("tlstrpProgressBar", true).FirstOrDefault()
-                                        as ToolStripProgressBar;
-
-
-            if (mdiToolStripProgressBar is null)
-            {
-                throw new InvalidOperationException("Controls of mdi form does not contain tool" +
-                    " strip label with 'tlstrpProgressBar' name");
-            }
-            toolStripProgressBar = mdiToolStripProgressBar;
-        }
-        private void LoadToolStrip()
-        {
-            LoadToolStripLabel();
-            LoadToolStripProgressBar();
-        }
-
-        public void LoadTaskBar()
-        {
-            toolStripProgressBar.Step = 1;
-            Stopwatch stopwatch = new Stopwatch();
-            stopwatch.Start();
-            while (stopwatch.IsRunning)
-            {
-                toolStripProgressBar.PerformStep();
-                if (stopwatch.ElapsedMilliseconds == 1000)
-                {
-                    stopwatch.Stop();
-                }
-            }
-
-        }
-        public void ResetTaskBar()
-        {
-            toolStripProgressBar.Value = 0;
-        }
-        public void DisplayCurrentPositionOnStripLabel(/*ToolStripStatusLabel label,*/ int rowNumber, int totalRowCount)
-        {
-            toolStripLabel.Text = $"{rowNumber} of {totalRowCount} records.";
-        }
-        public void DisplayStatusRow(/*ToolStripStatusLabel label,*/ string status)
-        {
-            toolStripLabel.Text = $"{status}...";
+            this.DisplayParentStatusStripMessage($"{status}...");
         }
         #endregion
 
+        #region Validation
         private void txt_Validating(object sender, CancelEventArgs e)
         {
             string errorMessage = string.Empty;
@@ -537,16 +534,25 @@ namespace DrivingSchoolManagementSystem
         {
             string errorMessage = string.Empty;
             DateTimePicker dateTime = (DateTimePicker)sender;
-            if (sender == dteHired && !Validator.ValidateHiredDate(new DateTime(dteHired.Value.Year, dteHired.Value.Month, dteHired.Value.Day)))
+            if (sender == dteHired && !Validator.ValidateHiredDate(dteHired.Value))
             {
                 errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date.";
             }
-            if (sender == dteBirth && !Validator.ValidateDateOfBirth(new DateTime(dteBirth.Value.Year, dteBirth.Value.Month, dteBirth.Value.Day)))
+            if (sender == dteBirth && !Validator.ValidateDateOfBirth(dteBirth.Value))
             {
                 errorMessage = $"{dateTime.Tag} is not valid, an Instructor must be between 24 and 60 years of age.";
             }
             errorProvider1.SetError(dateTime, errorMessage);
         }
+        #endregion
 
+        #region Other Methods
+        private void DisplayExceptionMessage(Exception ex)
+        {
+            MessageBox.Show(ex.Message, ex.GetType().ToString());
+        }
+
+        private void ClearParentStatusStrip() => this.DisplayParentStatusStripMessage(string.Empty);
+        #endregion
     }
 }

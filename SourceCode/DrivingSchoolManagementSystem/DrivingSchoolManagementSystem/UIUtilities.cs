@@ -11,7 +11,11 @@ namespace DrivingSchoolManagementSystem
 {
     public static class UIUtilities
     {
-        public static void ClearControls(this Control.ControlCollection constrolsCollection)
+        public static void ClearChildControls(this Control control, int defaultSelectedIndex = 0)
+        {
+            ClearControls(control.Controls, defaultSelectedIndex);
+        }
+        public static void ClearControls(this Control.ControlCollection constrolsCollection, int defaultSelectedIndex = 0)
         {
             foreach (Control control in constrolsCollection)
             {
@@ -23,11 +27,20 @@ namespace DrivingSchoolManagementSystem
                     case CheckBox checkBox:
                         checkBox.Checked = false;
                         break;
+                    case RadioButton radioButton:
+                        radioButton.Checked = false;
+                        break;
                     case ComboBox combo:
-                        combo.SelectedIndex = 0;
+                        combo.SelectedIndex = defaultSelectedIndex;
+                        break;
+                    case ListBox listBox:
+                        listBox.SelectedIndex = defaultSelectedIndex;
                         break;
                     case GroupBox groupBox:
                         ClearControls(groupBox.Controls);
+                        break;
+                    case Panel panel:
+                        ClearControls(panel.Controls);
                         break;
                 }
             }
@@ -51,15 +64,22 @@ namespace DrivingSchoolManagementSystem
             label.Text = string.Empty;
         }
 
-        //public static void DisplayCurrentPosition(ToolStripStatusLabel label, int rowNumber, int totalRowCount)
-        //{
-        //    label.Text = $"{rowNumber} of {totalRowCount} records.";
-        //}
+        public static void DisplayParentStatusStripMessage(this Form form, string message, Color? color = null)
+        {
+            frmMDIParent? parentMdi = form.MdiParent as frmMDIParent;
 
-        //public static void DisplayStatusRow(ToolStripStatusLabel label, string status)
-        //{
-        //    label.Text = $"{status}...";
-        //}
+            if (parentMdi != null)
+            {
+                if (color == null)
+                {
+                    parentMdi.DisplayParentStatusStripMessage(message);
+                }
+                else
+                {
+                     parentMdi.DisplayStatusMessage(message, color.Value);
+                }
+            }
+        }
     }
     
 }

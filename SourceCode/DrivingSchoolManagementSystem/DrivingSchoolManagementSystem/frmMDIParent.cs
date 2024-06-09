@@ -148,5 +148,16 @@ namespace DrivingSchoolManagementSystem
 
             tlstrpStatus.Text = "Ready...";
         }
+
+        public void DisplayStatusMessage(string message)
+        {
+            DisplayStatusMessage(message, Color.Black);
+        }
+
+        public void DisplayStatusMessage(string message, Color color)
+        {
+            this.tlstrpStatus.Text = message;
+            this.tlstrpStatus.ForeColor = color;
+        }
     }
 }
