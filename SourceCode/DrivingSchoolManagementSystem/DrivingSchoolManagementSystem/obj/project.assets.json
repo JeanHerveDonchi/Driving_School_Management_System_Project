@@ -473,7 +473,7 @@
     "C:\\Users\\User1\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "0.5.0",
     "restore": {
       "projectUniqueName": "C:\\src\\Database Programming\\Project\\Driving_School_Management_System_Project\\SourceCode\\DrivingSchoolManagementSystem\\DrivingSchoolManagementSystem\\DrivingSchoolManagementSystem.csproj",
       "projectName": "DrivingSchoolManagementSystem",

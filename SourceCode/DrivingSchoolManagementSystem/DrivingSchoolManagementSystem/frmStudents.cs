@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static System.Windows.Forms.AxHost;
 
 namespace DrivingSchoolManagementSystem
 {
-    public partial class frmInstructors : Form
+    public partial class frmStudents : Form
     {
+
         #region Private Fields
 
         private int currentId;
@@ -27,12 +26,14 @@ namespace DrivingSchoolManagementSystem
         private FormState currentState;
 
         #endregion
-        public frmInstructors()
+
+        public frmStudents()
         {
             InitializeComponent();
         }
 
         #region Event Handlers
+
         private void Navigation_Handler(object sender, EventArgs e)
         {
             try
@@ -68,7 +69,7 @@ namespace DrivingSchoolManagementSystem
                 }
 
                 LoadCurrentPosition();
-                DisplayCurrentInstructor();
+                DisplayCurrentStudent();
             }
             catch (Exception ex)
             {
@@ -76,12 +77,12 @@ namespace DrivingSchoolManagementSystem
             }
         }
 
-        private void frmInstructors_Load(object sender, EventArgs e)
+        private void frmStudents_Load(object sender, EventArgs e)
         {
             try
             {
                 SetState(FormState.View);
-                LoadFirstInstructor();
+                LoadFirstStudent();
             }
             catch (Exception ex)
             {
@@ -103,16 +104,17 @@ namespace DrivingSchoolManagementSystem
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Are you sure you want to delete this Instructor?", "Are you sure",
+            if (MessageBox.Show("Are you sure you want to delete this Student?", "Are you sure",
                MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
-                    DeleteInstructor();
-                    LoadFirstInstructor();
+                    DeleteStudent();
+                    LoadFirstStudent();
                 }
                 catch (SqlException ex)
                 {
+                    // for debugging
                     MessageBox.Show("Sql Related Error: " + ex.Message);
                 }
                 catch (Exception ex)
@@ -121,6 +123,7 @@ namespace DrivingSchoolManagementSystem
                 }
             }
         }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
             try
@@ -136,14 +139,14 @@ namespace DrivingSchoolManagementSystem
                         if (currentState == FormState.Add)
                         {
                             //add
-                            CreateInstructor();      
+                            CreateStudent();
                         }
                         else
                         {
                             //edit
-                            UpdateInstructor();
+                            UpdateStudent();
                         }
-                        LoadFirstInstructor();
+                        LoadFirstStudent();
                         SetState(FormState.View);
                     }
                     else
@@ -167,7 +170,7 @@ namespace DrivingSchoolManagementSystem
             try
             {
                 SetState(FormState.View);
-                DisplayCurrentInstructor();
+                DisplayCurrentStudent();
                 DisplayCurrentPositionOnStripLabel(rowNumber, totalRowCount);
             }
             catch (Exception ex)
@@ -189,15 +192,31 @@ namespace DrivingSchoolManagementSystem
             }
         }
 
+        private void chkHasLearnersLicence_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkHasLearnersLicence.Checked)
+            {
+                if (chkHasLearnersLicence.Enabled)
+                {
+                    txtLearnersLicenceNumber.ReadOnly = false;
+                }    
+            }
+            else
+            {
+                txtLearnersLicenceNumber.Clear();
+                txtLearnersLicenceNumber.ReadOnly = true;
+            }
+        }
+
         #endregion
 
         #region Form State
+
         private void SetState(FormState state)
         {
             currentState = state;
             LoadState(state);
         }
-
         private void LoadState(FormState state)
         {
             if (state == FormState.View)
@@ -221,21 +240,24 @@ namespace DrivingSchoolManagementSystem
                 if (state == FormState.Add)
                 {
                     DisplayStatusRow("Adding");
-                    grpInstructors.ClearChildControls(-1);
-                }    
+                    grpStudents.ClearChildControls(-1);
+                }
                 DisableNavigation();
             }
         }
-
         private void InputsReadOnly(bool v)
         {
             txtFirstName.ReadOnly = v;
             txtLastName.ReadOnly = v;
             dteBirth.Enabled = !v;
-            dteHired.Enabled = !v;
+            dteAdmission.Enabled = !v;
             txtPhone.ReadOnly = v;
             txtEmail.ReadOnly = v;
-            txtLicenceNumber.ReadOnly = v;
+            chkHasLearnersLicence.Enabled = !v;
+            if (!v)
+            {
+                txtLearnersLicenceNumber.ReadOnly = !chkHasLearnersLicence.Checked; 
+            }        
             //txtAge.ReadOnly = v;
             txtAddress.ReadOnly = v;
         }
@@ -244,11 +266,11 @@ namespace DrivingSchoolManagementSystem
 
         #region Load Data
 
-        private void LoadFirstInstructor()
+        private void LoadFirstStudent()
         {
-            currentId = GetFirstInstructorId();
+            currentId = GetFirstStudentId();
             LoadCurrentPosition();
-            DisplayCurrentInstructor();
+            DisplayCurrentStudent();
         }
 
         private void LoadCurrentPosition()
@@ -261,17 +283,17 @@ namespace DrivingSchoolManagementSystem
 
         private void LoadPositionInfo(DataRow positionInfoRow)
         {
-            currentId = Convert.ToInt32(positionInfoRow["InstructorId"]);
-            firstId = Convert.ToInt32(positionInfoRow["FirstInstructorId"]);
-            lastId = Convert.ToInt32(positionInfoRow["LastInstructorId"]);
+            currentId = Convert.ToInt32(positionInfoRow["StudentId"]);
+            firstId = Convert.ToInt32(positionInfoRow["FirstStudentId"]);
+            lastId = Convert.ToInt32(positionInfoRow["LastStudentId"]);
             rowNumber = Convert.ToInt32(positionInfoRow["RowNumber"]);
             totalRowCount = Convert.ToInt32(positionInfoRow["TotalRowCount"]);
 
-            nextId = positionInfoRow["NextInstructorId"] != DBNull.Value ?
-                Convert.ToInt32(positionInfoRow["NextInstructorId"]) : null;
+            nextId = positionInfoRow["NextStudentId"] != DBNull.Value ?
+                Convert.ToInt32(positionInfoRow["NextStudentId"]) : null;
 
-            previousId = positionInfoRow["PreviousInstructorId"] != DBNull.Value ?
-                Convert.ToInt32(positionInfoRow["PreviousInstructorId"]) : null;
+            previousId = positionInfoRow["PreviousStudentId"] != DBNull.Value ?
+                Convert.ToInt32(positionInfoRow["PreviousStudentId"]) : null;
         }
 
         #endregion
@@ -306,32 +328,35 @@ namespace DrivingSchoolManagementSystem
 
         #region Display DataRow
 
-        private void DisplayCurrentInstructor()
+        private void DisplayCurrentStudent()
         {
-            DataRow currentInstructorRow = GetInstructorDataRow(currentId);
-            DisplayInstructor(currentInstructorRow);
+            DataRow currentStudentRow = GetStudentDataRow(currentId);
+            DisplayStudent(currentStudentRow);
         }
 
-        private void DisplayInstructor(DataRow currentInstructorRow)
+        private void DisplayStudent(DataRow currentStudentRow)
         {
-            txtId.Text = currentInstructorRow["InstructorID"].ToString();
-            txtFirstName.Text = currentInstructorRow["FirstName"].ToString();
-            txtLastName.Text = currentInstructorRow["LastName"].ToString();
-            dteBirth.Value = (DateTime)currentInstructorRow["DateOfBirth"];
-            dteHired.Value = (DateTime)currentInstructorRow["HiredDate"];
-            txtPhone.Text = currentInstructorRow["PhoneNumber"].ToString();
-            txtEmail.Text = currentInstructorRow["Email"].ToString();
-            txtLicenceNumber.Text = currentInstructorRow["LicenceNumber"].ToString();
-            txtAge.Text = currentInstructorRow["Age"].ToString();
-            txtAddress.Text = currentInstructorRow["Address"].ToString();
+            txtId.Text = currentStudentRow["StudentID"].ToString();
+            txtFirstName.Text = currentStudentRow["FirstName"].ToString();
+            txtLastName.Text = currentStudentRow["LastName"].ToString();
+            dteBirth.Value = (DateTime)currentStudentRow["DateOfBirth"];
+            dteAdmission.Value = (DateTime)currentStudentRow["AdmissionDate"];
+            txtPhone.Text = currentStudentRow["PhoneNumber"].ToString();
+            txtEmail.Text = currentStudentRow["Email"].ToString();
+            chkHasLearnersLicence.Checked = BinaryIntToBoolean(Convert.ToInt32(currentStudentRow["HasLearnersLicence"]));
+            txtLearnersLicenceNumber.Text = NullableDBValueToString(currentStudentRow, "LearnersLicenceNumber");
+            txtAge.Text = currentStudentRow["Age"].ToString();
+            txtAddress.Text = currentStudentRow["Address"].ToString();
+            txtDueFees.Text = DBDecimalToString(Convert.ToDecimal(currentStudentRow["DueFees"]));
         }
 
         #endregion
 
         #region CRUD operations(Send Data)
-        private void DeleteInstructor()
+
+        private void DeleteStudent()
         {
-            string sqlDelete = $"DELETE FROM Instructors WHERE InstructorID = {txtId.Text}";
+            string sqlDelete = $"DELETE FROM Students WHERE StudentID = {txtId.Text}";
 
             int rowsAffected = DataAccess.SendData(sqlDelete);
 
@@ -341,7 +366,7 @@ namespace DrivingSchoolManagementSystem
             }
             else if (rowsAffected == 1)
             {
-                MessageBox.Show("Instructor deleted successfully");
+                MessageBox.Show("Student was deleted successfully");
             }
             else
             {
@@ -349,29 +374,76 @@ namespace DrivingSchoolManagementSystem
                 MessageBox.Show("Error Occured: Something went wrong please verify your data");
             }
         }
-        private void UpdateInstructor()
+
+        private void CreateStudent()
         {
             int age = HelperMethods.CalculateAge(dteBirth.Value);
-            if (!Validator.ValidateInstructorAge(age))
+            if (!Validator.ValidateStudentAge(age))
             {
                 //this would not normally happen
-                MessageBox.Show("Please check entered Date of Birth, an Instructor must be between 24 and 60 years of age", "Problem Occured");
+                MessageBox.Show("Please check entered Date of Birth, a Student must be atleast 16 years of age", "Problem Occured");
                 return;
             }
-            string sqlUpdateInstructor = $@"UPDATE Instructors
+            string sqlInsertStudents = $@"INSERT INTO Students 
+                        (
+                            FirstName, LastName, DateOfBirth,
+                            HasLearnersLicence, AdmissionDate,
+                            PhoneNumber, Email,
+                            LearnersLicenceNumber, age, address
+                            )
+                        VALUES (
+                                '{txtFirstName.Text.Trim()}',
+                                '{txtLastName.Text.Trim()}',
+                                '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
+                                {BoolToBinaryInt(chkHasLearnersLicence.Checked)},
+                                '{dteAdmission.Value.Year}-{dteAdmission.Value.Month}-{dteAdmission.Value.Day}',
+                                '{txtPhone.Text}',
+                                '{txtEmail.Text}',
+                                {txtLearnersLicenceNumber.Text},
+                                {age},
+                                '{txtAddress.Text}'
+                                )";
+            int rowsAffected = DataAccess.SendData(sqlInsertStudents);
+
+            if (rowsAffected == 1)
+            {
+                MessageBox.Show("Student created.");
+            }
+            else if (rowsAffected == 0)
+            {
+                MessageBox.Show("Error occured: The database reported no rows affected, meaning the changes weren't saved");
+
+            }
+            else
+            {
+                MessageBox.Show("Error Occured: Something went wrong please verify your data");
+            }
+        }
+
+        private void UpdateStudent()
+        {
+            int age = HelperMethods.CalculateAge(dteBirth.Value);
+            if (!Validator.ValidateStudentAge(age))
+            {
+                //this would not normally happen
+                MessageBox.Show("Please check entered Date of Birth, a Student must be atleast 16 years of age", "Problem Occured");
+                return;
+            }
+            string sqlUpdateStudent = $@"UPDATE Students
                         SET FirstName = '{txtFirstName.Text.Trim()}', 
                             LastName = '{txtLastName.Text.Trim()}', 
-                            DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}', 
-                            HiredDate = '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}', 
+                            DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
+                            HasLearnersLicence = {BoolToBinaryInt(chkHasLearnersLicence.Checked)},
+                            AdmissionDate = '{dteAdmission.Value.Year}-{dteAdmission.Value.Month}-{dteAdmission.Value.Day}', 
                             PhoneNumber = '{txtPhone.Text}', 
                             Email = '{txtEmail.Text}', 
-                            LicenceNumber = {txtLicenceNumber.Text}, 
+                            LearnersLicenceNumber = {txtLearnersLicenceNumber.Text}, 
                             Age = {age}, 
                             Address = '{txtAddress.Text}'
-                        WHERE InstructorID = {txtId.Text}";
+                        WHERE StudentID = {txtId.Text}";
 
 
-            int rowsAffected = DataAccess.SendData(sqlUpdateInstructor);
+            int rowsAffected = DataAccess.SendData(sqlUpdateStudent);
             if (rowsAffected == 0)
             {
                 MessageBox.Show("The database reported no rows affected, meaning the changes weren't saved");
@@ -387,56 +459,13 @@ namespace DrivingSchoolManagementSystem
             }
         }
 
-        private void CreateInstructor()
-        {
-            int age = HelperMethods.CalculateAge(dteBirth.Value);
-            if (!Validator.ValidateInstructorAge(age))
-            {
-                //this would not normally happen
-                MessageBox.Show("Please check entered Date of Birth, an Instructor must be between 24 and 60 years of age", "Problem Occured");
-                return;
-            }
-            string sqlInsertInstructors = $@"INSERT INTO Instructors 
-                        (FirstName, LastName,
-                            DateOfBirth, HiredDate,
-                            PhoneNumber, Email,
-                            LicenceNumber, Age,
-                            Address
-                            )
-                        VALUES (
-                                '{txtFirstName.Text.Trim()}',
-                                '{txtLastName.Text.Trim()}',
-                                '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
-                                '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}',
-                                '{txtPhone.Text}',
-                                '{txtEmail.Text}',
-                                {txtLicenceNumber.Text},
-                                {age},
-                                '{txtAddress.Text}'
-                                )";
-            int rowsAffected = DataAccess.SendData(sqlInsertInstructors);
-
-            if (rowsAffected == 1)
-            {
-                MessageBox.Show("Instructor created.");
-            }
-            else if (rowsAffected == 0)
-            {
-                MessageBox.Show("Error occured: The database reported no rows affected, meaning the changes weren't saved");
-
-            }
-            else
-            {
-                MessageBox.Show("Error Occured: Something went wrong please verify your data");
-            }
-        }
         #endregion
 
-        #region Get/Retrieve Data
+        #region Get / Retrieve Data
 
-        private int GetFirstInstructorId()
+        private int GetFirstStudentId()
         {
-            int id = Convert.ToInt32(DataAccess.GetValue("SELECT TOP (1) InstructorID FROM Instructors ORDER BY LastName"));
+            int id = Convert.ToInt32(DataAccess.GetValue("SELECT TOP (1) StudentID FROM Students ORDER BY LastName"));
             return id;
         }
 
@@ -444,11 +473,11 @@ namespace DrivingSchoolManagementSystem
 
         #region Get Data Row
 
-        private DataRow GetInstructorDataRow(int currentId)
+        private DataRow GetStudentDataRow(int currentId)
         {
-            string sqlInstructorById = $"SELECT * FROM Instructors WHERE InstructorID = {currentId}";
+            string sqlStudentById = $"SELECT * FROM Students WHERE StudentID = {currentId}";
 
-            DataTable dt = DataAccess.GetData(sqlInstructorById);
+            DataTable dt = DataAccess.GetData(sqlStudentById);
 
             return dt.Rows[0];
         }
@@ -457,29 +486,30 @@ namespace DrivingSchoolManagementSystem
         {
             string sqlNavigation = $@"
                 SELECT 
-                InstructorID,
+                StudentID,
                 (
-                    SELECT TOP(1) InstructorID as FirstInstructorId FROM Instructors ORDER BY LastName
-                ) as FirstInstructorId,
-                i.PreviousInstructorId,
-                i.NextInstructorId,
+                    SELECT TOP(1) StudentID as FirstStudentId FROM Students ORDER BY LastName
+                ) as FirstStudentId,
+                s.PreviousStudentId,
+                s.NextStudentId,
                 (
-                    SELECT TOP(1) InstructorID as LastInstructorID FROM Instructors ORDER BY LastName Desc
-                ) as LastInstructorID,
-                i.RowNumber,
+                    SELECT TOP(1) StudentID as LastStudentID FROM Students ORDER BY LastName Desc
+                ) as LastStudentID,
+                s.RowNumber,
                 (
-	                SELECT COUNT(*) FROM Instructors
+                    SELECT COUNT(*) FROM Students
                 ) as [TotalRowCount]
                 FROM
                 (
-                    SELECT InstructorID, FirstName, LastName,
-                    LEAD(InstructorID) OVER(ORDER BY LastName) AS NextInstructorId,
-                    LAG(InstructorID) OVER(ORDER BY LastName) AS PreviousInstructorId,
+                    SELECT StudentID, FirstName, LastName,
+                    LEAD(StudentID) OVER(ORDER BY LastName) AS NextStudentId,
+                    LAG(StudentID) OVER(ORDER BY LastName) AS PreviousStudentId,
                     ROW_NUMBER() OVER(ORDER BY LastName) AS 'RowNumber'
-                    FROM Instructors
-                ) AS i
-                WHERE i.InstructorID = {currentId}
-                ORDER BY i.LastName";
+                    FROM Students
+                ) AS s
+                WHERE s.StudentID = {currentId}
+                ORDER BY s.LastName
+                ";
 
             DataTable dt = DataAccess.GetData(sqlNavigation);
 
@@ -489,9 +519,10 @@ namespace DrivingSchoolManagementSystem
         #endregion
 
         #region ToolStrip Methods
+
         public void DisplayCurrentPositionOnStripLabel(int rowNumber, int totalRowCount)
         {
-            this.DisplayParentStatusStripMessage($"{rowNumber} of {totalRowCount} records.") ;
+            this.DisplayParentStatusStripMessage($"{rowNumber} of {totalRowCount} records.");
         }
         public void DisplayStatusRow(string status)
         {
@@ -502,6 +533,7 @@ namespace DrivingSchoolManagementSystem
         #endregion
 
         #region Validation
+
         private void txt_Validating(object sender, CancelEventArgs e)
         {
             string errorMessage = string.Empty;
@@ -529,7 +561,7 @@ namespace DrivingSchoolManagementSystem
                 errorMessage = $"{textBox.Tag} is not valid email, please retry.";
                 e.Cancel = true;
             }
-            if (sender == txtLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text))
+            if (sender == txtLearnersLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text) && chkHasLearnersLicence.Checked)
             {
                 errorMessage = $"{textBox.Tag} is not valid (must be a 8 digit number without special characters or spaces).";
                 e.Cancel = true;
@@ -547,24 +579,25 @@ namespace DrivingSchoolManagementSystem
         {
             string errorMessage = string.Empty;
             DateTimePicker dateTime = (DateTimePicker)sender;
-            if (sender == dteHired && !Validator.ValidateHiredDate(dteHired.Value))
+            if (sender == dteAdmission && !Validator.ValidateAdmissionDate(dteAdmission.Value))
             {
                 errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date.";
-                e.Cancel = true;
+               e.Cancel = true;
             }
             if (sender == dteBirth)
             {
                 int age = HelperMethods.CalculateAge(dteBirth.Value);
-                if (!Validator.ValidateInstructorAge(age))
+                if (!Validator.ValidateStudentAge(age))
                 {
                     //this would not normally happen
-                    errorMessage = $"{dateTime.Tag} is not valid, an Instructor must be between 24 and 60 years of age.";
-                    e.Cancel = true;
-                } 
-                
+                    errorMessage = $"{dateTime.Tag} is not valid, a Student must be atleast 16 years of age.";
+                   e.Cancel = true;
+                }
+
             }
             errorProvider1.SetError(dateTime, errorMessage);
         }
+
         #endregion
 
         #region Other Methods
@@ -573,7 +606,47 @@ namespace DrivingSchoolManagementSystem
             MessageBox.Show(ex.Message, ex.GetType().ToString());
         }
 
-        
+        private bool BinaryIntToBoolean(int binaryValue)
+        {
+            if (binaryValue == 0)
+            {
+                return false;
+            }
+            else if (binaryValue == 1)
+            {
+                return true;
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("Given input is not a valid binary");
+            }
+        }
+
+        private int BoolToBinaryInt(bool value)
+        {
+            if (value) return 1;
+            else return 0;
+        }
+
+        private string NullableDBValueToString(DataRow dt, string columnName)
+        {
+            if (dt[columnName] == DBNull.Value)
+            {
+                return "";
+            }
+            else
+            {
+                return dt[columnName].ToString()!;
+            }
+        }
+
+        private string DBDecimalToString(decimal dbValueInDecimal)
+        {
+            return $"{dbValueInDecimal:c}";
+        }
+
         #endregion
+
+
     }
 }

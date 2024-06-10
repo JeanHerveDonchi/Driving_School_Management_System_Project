@@ -45,7 +45,7 @@
             pictureBox1.Image = Properties.Resources.Splash;
             pictureBox1.Location = new Point(0, 0);
             pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(802, 395);
+            pictureBox1.Size = new Size(871, 395);
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
@@ -53,7 +53,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 398);
+            label1.Location = new Point(12, 439);
             label1.Name = "label1";
             label1.Size = new Size(134, 15);
             label1.TabIndex = 1;
@@ -62,7 +62,7 @@
             // lblCompanyName
             // 
             lblCompanyName.AutoSize = true;
-            lblCompanyName.Location = new Point(198, 398);
+            lblCompanyName.Location = new Point(376, 439);
             lblCompanyName.Name = "lblCompanyName";
             lblCompanyName.Size = new Size(38, 15);
             lblCompanyName.TabIndex = 2;
@@ -71,7 +71,7 @@
             // lblVersion
             // 
             lblVersion.AutoSize = true;
-            lblVersion.Location = new Point(418, 398);
+            lblVersion.Location = new Point(641, 439);
             lblVersion.Name = "lblVersion";
             lblVersion.Size = new Size(38, 15);
             lblVersion.TabIndex = 3;
@@ -80,7 +80,7 @@
             // lblProduct
             // 
             lblProduct.AutoSize = true;
-            lblProduct.Location = new Point(623, 398);
+            lblProduct.Location = new Point(12, 482);
             lblProduct.Name = "lblProduct";
             lblProduct.Size = new Size(38, 15);
             lblProduct.TabIndex = 4;
@@ -93,10 +93,11 @@
             // 
             // prgLoading
             // 
+            prgLoading.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             prgLoading.ForeColor = Color.LimeGreen;
-            prgLoading.Location = new Point(0, 427);
+            prgLoading.Location = new Point(0, 523);
             prgLoading.Name = "prgLoading";
-            prgLoading.Size = new Size(802, 23);
+            prgLoading.Size = new Size(871, 23);
             prgLoading.TabIndex = 5;
             // 
             // Splash
@@ -104,7 +105,7 @@
             AllowDrop = true;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(869, 546);
             ControlBox = false;
             Controls.Add(prgLoading);
             Controls.Add(lblProduct);

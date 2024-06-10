@@ -45,17 +45,28 @@ namespace DrivingSchoolManagementSystem
                 }
             }
         }
-        public static void Bind(this ComboBox cmb, string emptyColumn, string nullColumn, object? dataSource)
+        public static void Bind(this ComboBox cmb, string displayMember, string valueMember, DataTable dataSource,
+           bool addEmptyRow = false, string defaultEmptyRowText = "")
         {
+            if (addEmptyRow)
+            {
+                AddEmptyRow(dataSource, displayMember, valueMember, defaultEmptyRowText);
+            }
+
             cmb.DataSource = dataSource;
-            cmb.ValueMember = nullColumn;
-            cmb.DisplayMember = emptyColumn;
+            cmb.ValueMember = valueMember;
+            cmb.DisplayMember = displayMember;
         }
-        public static void AddEmptyRow(this DataTable dt, string displayMember, string valueMember)
+        public static void AddEmptyRow(this DataTable dt, string emptyColumnName, string nullColumnName, string? emptyText = "", object? emptyValue = null)
         {
+            if (emptyValue == null)
+            {
+                emptyValue = DBNull.Value;
+            }
+
             DataRow dr = dt.NewRow();
-            dr[displayMember] = string.Empty;
-            dr[valueMember] = DBNull.Value;
+            dr[nullColumnName] = emptyValue;
+            dr[emptyColumnName] = emptyText;
             dt.Rows.InsertAt(dr, 0);
         }
 
@@ -72,7 +83,7 @@ namespace DrivingSchoolManagementSystem
             {
                 if (color == null)
                 {
-                    parentMdi.DisplayParentStatusStripMessage(message);
+                    parentMdi.DisplayStatusMessage(message);
                 }
                 else
                 {

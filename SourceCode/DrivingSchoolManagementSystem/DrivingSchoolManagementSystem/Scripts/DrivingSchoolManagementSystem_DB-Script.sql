@@ -88,6 +88,18 @@ ALTER TABLE Students
 ADD CONSTRAINT CHK_StudentAge CHECK (Age >= 16);
 GO
 
+-- Add the LearnersLicenceNumber column back to the students table
+ALTER TABLE students
+ADD LearnersLicenceNumber BIGINT NULL;
+GO
+
+-- Create a filtered unique index to allow multiple NULL values but enforce uniqueness on non-NULL values
+CREATE UNIQUE INDEX IX_Unique_LearnersLicenceNumber
+ON students (LearnersLicenceNumber)
+WHERE LearnersLicenceNumber IS NOT NULL;
+GO
+
+
 USE DrivingSchoolDB;
 GO
 
@@ -111,19 +123,32 @@ INSERT INTO Login (Username, PasswordHash) VALUES
 ('hervedonchi01', 'simplepass2');
 GO
 
+ALTER TABLE Lessons
+ADD LessonType VARCHAR(255) NOT NULL DEFAULT 'Theoric';
+
+ALTER TABLE Lessons
+ALTER COLUMN PickupLocation VARCHAR(255) NULL;
+
 USE DrivingSchoolDB;
 GO
 
--- Insert into Students table
-INSERT INTO Students (FirstName, LastName, DateOfBirth, HasLearnersLicence, AdmissionDate, PhoneNumber, Email, Age, Address, DueFees) VALUES
-('John', 'Smith', '1998-05-15', 1, '2024-05-01', '5065551234', 'john.smith@example.com', 26, '123 Main St, Moncton, NB', 0),
-('Emily', 'Johnson', '1999-08-21', 1, '2024-05-02', '5065552345', 'emily.johnson@example.com', 25, '456 Maple Ave, Moncton, NB', 0),
-('Michael', 'Williams', '2000-10-30', 1, '2024-05-03', '5065553456', 'michael.williams@example.com', 24, '789 Elm St, Moncton, NB', 0),
-('Emma', 'Brown', '2001-12-12', 0, '2024-05-04', '5065554567', 'emma.brown@example.com', 23, '987 Oak St, Moncton, NB', 0),
-('Matthew', 'Jones', '2002-02-25', 1, '2024-05-05', '5065555678', 'matthew.jones@example.com', 22, '654 Birch St, Moncton, NB', 0),
-('Olivia', 'Miller', '2003-04-03', 0, '2024-05-06', '5065556789', 'olivia.miller@example.com', 21, '321 Pine St, Moncton, NB', 0),
-('William', 'Davis', '2004-06-17', 1, '2024-05-07', '5065557890', 'william.davis@example.com', 20, '123 Cedar St, Moncton, NB', 0);
-GO
+-- Insert students with some having learners licence numbers and some being NULL
+INSERT INTO students (FirstName, LastName, DateOfBirth, HasLearnersLicence, AdmissionDate, PhoneNumber, Email, LearnersLicenceNumber, age, address, Duefees)
+VALUES 
+('John', 'Smith', '2006-08-15', 1, '2024-01-10', '5061234567', 'john.smith@example.com', 9876543210, 18, '123 Maple St, Moncton, NB', 0.00),
+
+('Jane', 'Doe', '2005-12-05', 0, '2024-01-15', '5062345678', 'jane.doe@example.com', NULL, 19, '456 Oak St, Moncton, NB', 0.00),
+
+('Emily', 'Johnson', '2004-11-22', 1, '2024-02-10', '5063456789', 'emily.johnson@example.com', 8765432109, 20, '789 Pine St, Moncton, NB', 0.00),
+
+('Michael', 'Brown', '2003-10-10', 0, '2024-03-01', '5064567890', 'michael.brown@example.com', NULL, 21, '1010 Birch St, Moncton, NB', 0.00),
+
+('Sarah', 'Davis', '2006-07-07', 1, '2024-03-15', '5065678901', 'sarah.davis@example.com', 7654321098, 17, '1111 Cedar St, Moncton, NB', 0.00),
+
+('David', 'Miller', '2005-05-30', 0, '2024-04-10', '5066789012', 'david.miller@example.com', NULL, 18, '1212 Spruce St, Moncton, NB', 0.00),
+
+('William', 'Davies', '2003-03-25', 1, '2024-04-25', '5067890123', 'william.davies@example.com', 6543210987, 21, '1313 Fir St, Moncton, NB', 0.00);
+
 
 -- Insert into Instructors table
 INSERT INTO Instructors (FirstName, LastName, DateOfBirth, HiredDate, PhoneNumber, Email, LicenceNumber, Age, Address) VALUES
@@ -144,5 +169,3 @@ INSERT INTO Instructors (FirstName, LastName, DateOfBirth, HiredDate, PhoneNumbe
 GO
 
 
-ALTER TABLE Lessons
-ADD LessonType VARCHAR(255) NOT NULL DEFAULT 'Theoric';

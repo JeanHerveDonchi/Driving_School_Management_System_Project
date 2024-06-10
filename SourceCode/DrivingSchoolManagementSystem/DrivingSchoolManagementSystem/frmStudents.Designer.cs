@@ -1,6 +1,6 @@
 ﻿namespace DrivingSchoolManagementSystem
 {
-    partial class frmInstructors
+    partial class frmStudents
     {
         /// <summary>
         /// Required designer variable.
@@ -30,16 +30,20 @@
         {
             components = new System.ComponentModel.Container();
             label1 = new Label();
-            grpInstructors = new GroupBox();
+            grpStudents = new GroupBox();
+            txtDueFees = new TextBox();
+            label12 = new Label();
+            txtLearnersLicenceNumber = new TextBox();
+            label10 = new Label();
+            chkHasLearnersLicence = new CheckBox();
             txtAge = new TextBox();
             Age = new Label();
             txtAddress = new TextBox();
             label11 = new Label();
-            txtLicenceNumber = new TextBox();
             label9 = new Label();
             txtEmail = new TextBox();
             label8 = new Label();
-            dteHired = new DateTimePicker();
+            dteAdmission = new DateTimePicker();
             label7 = new Label();
             txtPhone = new TextBox();
             label6 = new Label();
@@ -61,7 +65,7 @@
             btnNext = new Button();
             btnLast = new Button();
             errorProvider1 = new ErrorProvider(components);
-            grpInstructors.SuspendLayout();
+            grpStudents.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
             SuspendLayout();
             // 
@@ -71,42 +75,90 @@
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label1.Location = new Point(368, 20);
             label1.Name = "label1";
-            label1.Size = new Size(125, 32);
+            label1.Size = new Size(107, 32);
             label1.TabIndex = 0;
-            label1.Text = "Instructors";
+            label1.Text = "Students";
             // 
-            // grpInstructors
+            // grpStudents
             // 
-            grpInstructors.Controls.Add(txtAge);
-            grpInstructors.Controls.Add(Age);
-            grpInstructors.Controls.Add(txtAddress);
-            grpInstructors.Controls.Add(label11);
-            grpInstructors.Controls.Add(txtLicenceNumber);
-            grpInstructors.Controls.Add(label9);
-            grpInstructors.Controls.Add(txtEmail);
-            grpInstructors.Controls.Add(label8);
-            grpInstructors.Controls.Add(dteHired);
-            grpInstructors.Controls.Add(label7);
-            grpInstructors.Controls.Add(txtPhone);
-            grpInstructors.Controls.Add(label6);
-            grpInstructors.Controls.Add(dteBirth);
-            grpInstructors.Controls.Add(label5);
-            grpInstructors.Controls.Add(txtLastName);
-            grpInstructors.Controls.Add(label4);
-            grpInstructors.Controls.Add(txtFirstName);
-            grpInstructors.Controls.Add(label3);
-            grpInstructors.Controls.Add(txtId);
-            grpInstructors.Controls.Add(label2);
-            grpInstructors.Location = new Point(109, 55);
-            grpInstructors.Name = "grpInstructors";
-            grpInstructors.Size = new Size(620, 611);
-            grpInstructors.TabIndex = 1;
-            grpInstructors.TabStop = false;
-            grpInstructors.Text = "Instructor Details";
+            grpStudents.Controls.Add(txtDueFees);
+            grpStudents.Controls.Add(label12);
+            grpStudents.Controls.Add(txtLearnersLicenceNumber);
+            grpStudents.Controls.Add(label10);
+            grpStudents.Controls.Add(chkHasLearnersLicence);
+            grpStudents.Controls.Add(txtAge);
+            grpStudents.Controls.Add(Age);
+            grpStudents.Controls.Add(txtAddress);
+            grpStudents.Controls.Add(label11);
+            grpStudents.Controls.Add(label9);
+            grpStudents.Controls.Add(txtEmail);
+            grpStudents.Controls.Add(label8);
+            grpStudents.Controls.Add(dteAdmission);
+            grpStudents.Controls.Add(label7);
+            grpStudents.Controls.Add(txtPhone);
+            grpStudents.Controls.Add(label6);
+            grpStudents.Controls.Add(dteBirth);
+            grpStudents.Controls.Add(label5);
+            grpStudents.Controls.Add(txtLastName);
+            grpStudents.Controls.Add(label4);
+            grpStudents.Controls.Add(txtFirstName);
+            grpStudents.Controls.Add(label3);
+            grpStudents.Controls.Add(txtId);
+            grpStudents.Controls.Add(label2);
+            grpStudents.Location = new Point(109, 55);
+            grpStudents.Name = "grpStudents";
+            grpStudents.Size = new Size(620, 699);
+            grpStudents.TabIndex = 1;
+            grpStudents.TabStop = false;
+            grpStudents.Text = "Student Details";
+            // 
+            // txtDueFees
+            // 
+            txtDueFees.Location = new Point(43, 648);
+            txtDueFees.Name = "txtDueFees";
+            txtDueFees.ReadOnly = true;
+            txtDueFees.Size = new Size(537, 23);
+            txtDueFees.TabIndex = 26;
+            // 
+            // label12
+            // 
+            label12.AutoSize = true;
+            label12.Location = new Point(45, 629);
+            label12.Name = "label12";
+            label12.Size = new Size(57, 15);
+            label12.TabIndex = 25;
+            label12.Text = "Due Fees:";
+            // 
+            // txtLearnersLicenceNumber
+            // 
+            txtLearnersLicenceNumber.Location = new Point(46, 486);
+            txtLearnersLicenceNumber.Name = "txtLearnersLicenceNumber";
+            txtLearnersLicenceNumber.Size = new Size(534, 23);
+            txtLearnersLicenceNumber.TabIndex = 24;
+            txtLearnersLicenceNumber.Validating += txt_Validating;
+            // 
+            // label10
+            // 
+            label10.AutoSize = true;
+            label10.Location = new Point(45, 468);
+            label10.Name = "label10";
+            label10.Size = new Size(143, 15);
+            label10.TabIndex = 23;
+            label10.Text = "Leaner's Licence Number:";
+            // 
+            // chkHasLearnersLicence
+            // 
+            chkHasLearnersLicence.AutoSize = true;
+            chkHasLearnersLicence.Location = new Point(48, 437);
+            chkHasLearnersLicence.Name = "chkHasLearnersLicence";
+            chkHasLearnersLicence.Size = new Size(15, 14);
+            chkHasLearnersLicence.TabIndex = 22;
+            chkHasLearnersLicence.UseVisualStyleBackColor = true;
+            chkHasLearnersLicence.CheckedChanged += chkHasLearnersLicence_CheckedChanged;
             // 
             // txtAge
             // 
-            txtAge.Location = new Point(46, 489);
+            txtAge.Location = new Point(46, 538);
             txtAge.Name = "txtAge";
             txtAge.ReadOnly = true;
             txtAge.Size = new Size(534, 23);
@@ -115,7 +167,7 @@
             // Age
             // 
             Age.AutoSize = true;
-            Age.Location = new Point(46, 471);
+            Age.Location = new Point(46, 520);
             Age.Name = "Age";
             Age.Size = new Size(31, 15);
             Age.TabIndex = 20;
@@ -123,7 +175,7 @@
             // 
             // txtAddress
             // 
-            txtAddress.Location = new Point(43, 544);
+            txtAddress.Location = new Point(43, 593);
             txtAddress.Name = "txtAddress";
             txtAddress.PlaceholderText = "St Number. St Name. (Appt No)";
             txtAddress.Size = new Size(537, 23);
@@ -134,30 +186,20 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(46, 526);
+            label11.Location = new Point(46, 575);
             label11.Name = "label11";
             label11.Size = new Size(52, 15);
             label11.TabIndex = 18;
             label11.Text = "Address:";
             // 
-            // txtLicenceNumber
-            // 
-            txtLicenceNumber.Location = new Point(46, 435);
-            txtLicenceNumber.Name = "txtLicenceNumber";
-            txtLicenceNumber.PlaceholderText = "12345678";
-            txtLicenceNumber.Size = new Size(534, 23);
-            txtLicenceNumber.TabIndex = 15;
-            txtLicenceNumber.Tag = "Licence Number";
-            txtLicenceNumber.Validating += txt_Validating;
-            // 
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(46, 417);
+            label9.Location = new Point(43, 419);
             label9.Name = "label9";
-            label9.Size = new Size(97, 15);
+            label9.Size = new Size(120, 15);
             label9.TabIndex = 14;
-            label9.Text = "Licence Number:";
+            label9.Text = "Has Learners Licence:";
             // 
             // txtEmail
             // 
@@ -178,24 +220,24 @@
             label8.TabIndex = 12;
             label8.Text = "Email:";
             // 
-            // dteHired
+            // dteAdmission
             // 
-            dteHired.Location = new Point(43, 273);
-            dteHired.MinDate = new DateTime(2015, 1, 1, 0, 0, 0, 0);
-            dteHired.Name = "dteHired";
-            dteHired.Size = new Size(200, 23);
-            dteHired.TabIndex = 11;
-            dteHired.Tag = "Hired Date";
-            dteHired.Validating += dte_Validating;
+            dteAdmission.Location = new Point(43, 273);
+            dteAdmission.MinDate = new DateTime(2016, 1, 1, 0, 0, 0, 0);
+            dteAdmission.Name = "dteAdmission";
+            dteAdmission.Size = new Size(200, 23);
+            dteAdmission.TabIndex = 11;
+            dteAdmission.Tag = "Hired Date";
+            dteAdmission.Validating += dte_Validating;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Location = new Point(43, 255);
             label7.Name = "label7";
-            label7.Size = new Size(66, 15);
+            label7.Size = new Size(90, 15);
             label7.TabIndex = 10;
-            label7.Text = "Hired Date:";
+            label7.Text = "Admission Date";
             // 
             // txtPhone
             // 
@@ -218,7 +260,7 @@
             // dteBirth
             // 
             dteBirth.Location = new Point(43, 217);
-            dteBirth.MaxDate = new DateTime(2000, 12, 31, 0, 0, 0, 0);
+            dteBirth.MaxDate = new DateTime(2146, 12, 31, 0, 0, 0, 0);
             dteBirth.MinDate = new DateTime(1964, 1, 1, 0, 0, 0, 0);
             dteBirth.Name = "dteBirth";
             dteBirth.Size = new Size(200, 23);
@@ -291,7 +333,7 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(136, 672);
+            btnAdd.Location = new Point(135, 776);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(75, 33);
             btnAdd.TabIndex = 2;
@@ -301,7 +343,7 @@
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(261, 673);
+            btnDelete.Location = new Point(260, 777);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(75, 33);
             btnDelete.TabIndex = 3;
@@ -311,7 +353,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(383, 673);
+            btnSave.Location = new Point(382, 777);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 32);
             btnSave.TabIndex = 4;
@@ -321,7 +363,7 @@
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(629, 674);
+            btnExit.Location = new Point(628, 778);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(75, 32);
             btnExit.TabIndex = 5;
@@ -331,7 +373,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(503, 674);
+            btnCancel.Location = new Point(502, 778);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 32);
             btnCancel.TabIndex = 6;
@@ -341,7 +383,7 @@
             // 
             // btnFirst
             // 
-            btnFirst.Location = new Point(275, 739);
+            btnFirst.Location = new Point(274, 840);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(41, 32);
             btnFirst.TabIndex = 7;
@@ -351,7 +393,7 @@
             // 
             // btnPrevious
             // 
-            btnPrevious.Location = new Point(347, 739);
+            btnPrevious.Location = new Point(346, 840);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.Size = new Size(41, 32);
             btnPrevious.TabIndex = 8;
@@ -361,7 +403,7 @@
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(426, 739);
+            btnNext.Location = new Point(425, 840);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(41, 32);
             btnNext.TabIndex = 9;
@@ -371,7 +413,7 @@
             // 
             // btnLast
             // 
-            btnLast.Location = new Point(503, 739);
+            btnLast.Location = new Point(502, 840);
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(41, 32);
             btnLast.TabIndex = 10;
@@ -383,11 +425,11 @@
             // 
             errorProvider1.ContainerControl = this;
             // 
-            // frmInstructors
+            // frmStudents
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(845, 840);
+            ClientSize = new Size(845, 908);
             Controls.Add(btnLast);
             Controls.Add(btnNext);
             Controls.Add(btnPrevious);
@@ -397,13 +439,13 @@
             Controls.Add(btnSave);
             Controls.Add(btnDelete);
             Controls.Add(btnAdd);
-            Controls.Add(grpInstructors);
+            Controls.Add(grpStudents);
             Controls.Add(label1);
-            Name = "frmInstructors";
-            Text = "frmInstructors";
-            Load += frmInstructors_Load;
-            grpInstructors.ResumeLayout(false);
-            grpInstructors.PerformLayout();
+            Name = "frmStudents";
+            Text = "frmStudents";
+            Load += frmStudents_Load;
+            grpStudents.ResumeLayout(false);
+            grpStudents.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
             ResumeLayout(false);
             PerformLayout();
@@ -412,7 +454,7 @@
         #endregion
 
         private Label label1;
-        private GroupBox grpInstructors;
+        private GroupBox grpStudents;
         private Label label2;
         private TextBox txtLastName;
         private Label label4;
@@ -424,10 +466,9 @@
         private DateTimePicker dteBirth;
         private Label label5;
         private Label label8;
-        private DateTimePicker dteHired;
+        private DateTimePicker dteAdmission;
         private Label label7;
         private TextBox txtEmail;
-        private TextBox txtLicenceNumber;
         private Label label9;
         private TextBox txtAddress;
         private Label label11;
@@ -443,5 +484,10 @@
         private ErrorProvider errorProvider1;
         private TextBox txtAge;
         private Label Age;
+        private CheckBox chkHasLearnersLicence;
+        private Label label10;
+        private TextBox txtLearnersLicenceNumber;
+        private Label label12;
+        private TextBox txtDueFees;
     }
 }

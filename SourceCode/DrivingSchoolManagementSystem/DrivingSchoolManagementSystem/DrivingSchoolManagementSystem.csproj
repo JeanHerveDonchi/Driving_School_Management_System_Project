@@ -8,7 +8,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Product>Driving School Management System</Product>
     <Company>Jean Herve Donchi</Company>
-    <Version>1.0</Version>
+	<IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+	<AssemblyVersion>0.9</AssemblyVersion>
+	<Version>0.5</Version>
   </PropertyGroup>
 
   <ItemGroup>

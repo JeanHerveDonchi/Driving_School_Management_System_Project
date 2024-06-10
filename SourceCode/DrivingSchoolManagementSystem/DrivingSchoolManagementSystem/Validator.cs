@@ -29,10 +29,19 @@ namespace DrivingSchoolManagementSystem
         }
         public static bool ValidatePhoneNumber(string phoneNumber)
         {
-            string pattern = @"^\d{9}$";
+            string pattern = @"^\d{10}$";
             Regex regex = new Regex(pattern);
 
-            return regex.IsMatch(phoneNumber);
+            if (regex.IsMatch(phoneNumber))
+            {
+                // Extract the first three digits
+                string areaCode = phoneNumber.Substring(0, 3);
+
+                // Check if the area code is in the valid set
+                return BusinessRulesConstants.CANADA_VALID_AREA_CODES.Contains(areaCode);
+            }
+
+            return false;
         }
         public static bool ValidateEmail(string email)
         {
@@ -50,13 +59,16 @@ namespace DrivingSchoolManagementSystem
         }
         public static bool ValidateAddress(string address)
         {
-            string pattern = @"^[a-zA-Z0-9\s,'\-\.#]+$";
-            Regex regex = new Regex(pattern);
+            string pattern = @"^\d+\s+[A-Za-z\s]+\s*(?:\d+)?\s*[A-Za-z\s]*(?:\s*[A-Za-z\s]*)?$";
+            Regex regex = new Regex(pattern, RegexOptions.Compiled);
 
             return regex.IsMatch(address);
         }
 
         #endregion
+
+        #region Instructor Validations
+
         public static bool ValidateInstructorAge(int age)
         {
             return age >= BusinessRulesConstants.MINIMUM_INSTRUCTOR_AGE
@@ -68,19 +80,21 @@ namespace DrivingSchoolManagementSystem
                 BusinessRulesConstants.SCHOOL_HIRE_START_YEAR, 1, 1);
         }
 
-        public static bool ValidateDateOfBirth(DateTime dateOfBirth)
+        #endregion
+
+        #region Student Validations
+        public static bool ValidateStudentAge(int age)
         {
-            int currentYear = DateTime.Now.Year;
-            int age = currentYear - dateOfBirth.Year;
-
-            // If the birthday hasn't occurred yet this year, subtract one from the age
-            if (dateOfBirth > new DateTime(currentYear, dateOfBirth.Month, dateOfBirth.Day))
-            {
-                age--;
-            }
-
-            return age >= BusinessRulesConstants.MINIMUM_INSTRUCTOR_AGE 
-                    && age <= BusinessRulesConstants.MAXIMUM_INSTRUCTOR_AGE;
+            return age >= BusinessRulesConstants.MINIMUM_STUDENT_AGE;
         }
+
+        public static bool ValidateAdmissionDate(DateTime date)
+        {
+            return date <= DateTime.Today && date >= new DateTime(
+                BusinessRulesConstants.SCHOOL_ADMISSION_START_YEAR, 1, 1);
+        }
+
+        #endregion
+
     }
 }

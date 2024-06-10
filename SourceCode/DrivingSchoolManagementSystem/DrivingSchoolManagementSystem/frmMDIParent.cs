@@ -29,10 +29,9 @@ namespace DrivingSchoolManagementSystem
                 case "instructors":
                     childForm = new frmInstructors();
                     break;
-                case "courses":
-                    //childForm = new frmCourses();
-                    //break;
-                    throw new NotImplementedException();
+                case "students":
+                    childForm = new frmStudents();
+                    break;
             }
             if (childForm != null)
             {
