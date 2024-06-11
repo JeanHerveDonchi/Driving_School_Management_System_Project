@@ -35,6 +35,9 @@ namespace DrivingSchoolManagementSystem
                 case "lessons":
                     childForm = new frmLessons();
                     break;
+                case "browseinstructors":
+                    childForm = new frmBrowseInstructors();
+                    break;
             }
             if (childForm != null)
             {

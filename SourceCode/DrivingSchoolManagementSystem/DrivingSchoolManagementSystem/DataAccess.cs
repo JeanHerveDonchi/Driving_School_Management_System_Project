@@ -45,7 +45,7 @@ namespace DrivingSchoolManagementSystem
             return ds;
         }
 
-        public static int SendData(string sql)
+        public static int SendData(string sql, string? atCarId = null, string? atPickupLocation = null)
         {
             int rowsAffected;
 
@@ -53,6 +53,14 @@ namespace DrivingSchoolManagementSystem
             {
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
+                    if (atCarId != null)
+                    {
+                        cmd.Parameters.AddWithValue(atCarId, DBNull.Value);
+                    }
+                    if (atPickupLocation != null)
+                    {
+                        cmd.Parameters.AddWithValue(atPickupLocation, DBNull.Value);
+                    }
                     conn.Open();
                     rowsAffected = cmd.ExecuteNonQuery();
                     conn.Close();

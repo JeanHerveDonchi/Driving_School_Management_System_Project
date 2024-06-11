@@ -400,7 +400,7 @@
             Controls.Add(grpInstructors);
             Controls.Add(label1);
             Name = "frmInstructors";
-            Text = "frmInstructors";
+            Text = "Add Instructors";
             Load += frmInstructors_Load;
             grpInstructors.ResumeLayout(false);
             grpInstructors.PerformLayout();

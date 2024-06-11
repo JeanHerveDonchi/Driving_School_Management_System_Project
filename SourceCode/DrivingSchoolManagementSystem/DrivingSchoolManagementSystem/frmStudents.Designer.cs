@@ -442,7 +442,7 @@
             Controls.Add(grpStudents);
             Controls.Add(label1);
             Name = "frmStudents";
-            Text = "frmStudents";
+            Text = "Add Students";
             Load += frmStudents_Load;
             grpStudents.ResumeLayout(false);
             grpStudents.PerformLayout();

@@ -507,8 +507,9 @@
             Controls.Add(label1);
             Name = "frmLessons";
             Tag = "";
-            Text = "frmLessons";
+            Text = "Add Lessons";
             Load += frmLessons_Load;
+            Leave += frmLessons_Leave;
             grpLessons.ResumeLayout(false);
             grpLessons.PerformLayout();
             grpLessonType.ResumeLayout(false);

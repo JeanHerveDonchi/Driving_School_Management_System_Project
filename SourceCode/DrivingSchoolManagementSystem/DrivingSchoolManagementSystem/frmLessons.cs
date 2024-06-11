@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 namespace DrivingSchoolManagementSystem
 {
@@ -117,30 +119,30 @@ namespace DrivingSchoolManagementSystem
                 }
                 errorMessages = [];
                 timesErrorMessages = [];
-        }
+            }
             //Have to refactor this logic later -> Bad Design///
-        catch (Exception ex) when (ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE_TIMES)
-        {
-            DisplayError($"Could not complete operation because of the following: \n" +
-                $"{string.Join(";\n", timesErrorMessages)}", "Could not complete operation");
-            return;
+            catch (Exception ex) when (ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE_TIMES)
+            {
+                DisplayError($"Could not complete operation because of the following: \n" +
+                    $"{string.Join(";\n", timesErrorMessages)}", "Could not complete operation");
+                return;
+            }
+            catch (Exception ex) when (ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE)
+            {
+                DisplayError($"Could not complete operation because of the following: \n" +
+                    $"{string.Join(";\n", errorMessages)}", "Could not complete operation");
+                return;
+            }
+            catch (Exception ex) when (ex.Message == "Duplicate rows")
+            {
+                DisplayError("Cannot insert because an entry with these " +
+                    "values exist already", "Cannot insert entry");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, ex.GetType().ToString());
+            }
         }
-        catch (Exception ex) when(ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE)
-        {
-            DisplayError($"Could not complete operation because of the following: \n" +
-                $"{string.Join(";\n", errorMessages)}", "Could not complete operation");
-            return;
-        }
-        catch (Exception ex) when(ex.Message == "Duplicate rows")
-        {
-            DisplayError("Cannot insert because an entry with these " +
-                "values exist already", "Cannot insert entry");
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message, ex.GetType().ToString());
-        }
-}
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -204,6 +206,10 @@ namespace DrivingSchoolManagementSystem
                     rdoEndTimeAM.Checked = true;
                     rdoStartTimeAM.Checked = true;
                     rdoTheoric.Checked = true;
+
+                    cmbCars.SelectedIndex = 0;
+                    cmbInstructors.SelectedIndex = 0;
+                    cmbStudents.SelectedIndex = 0;
                 }
 
             }
@@ -229,7 +235,7 @@ namespace DrivingSchoolManagementSystem
             txtDuration.ReadOnly = true;
             txtEndTimeHour.ReadOnly = !allowInput;
             txtEndTimeMin.ReadOnly = !allowInput;
-            txtPickupLocation.ReadOnly = !allowInput; 
+            txtPickupLocation.ReadOnly = !allowInput;
 
             txtStartTimeHour.ReadOnly = !allowInput;
             txtStartTimeMin.ReadOnly = !allowInput;
@@ -245,13 +251,13 @@ namespace DrivingSchoolManagementSystem
         {
             string sqlInstructors = "SELECT InstructorID, LastName + ', '+ FirstName AS FullName " +
                "FROM Instructors ORDER BY LastName, FirstName";
-            UIUtilities.Bind(cmbInstructors, "FullName", "InstructorId", DataAccess.GetData(sqlInstructors));
+            UIUtilities.Bind(cmbInstructors, "FullName", "InstructorId", DataAccess.GetData(sqlInstructors), addEmptyRow: true, "-- Select an Instructor --");
         }
 
         private void LoadStudents()
         {
             string sqlStudents = "SELECT StudentID, LastName + ', '+ FirstName AS FullName FROM Students ORDER BY LastName, FirstName";
-            UIUtilities.Bind(cmbStudents, "FullName", "StudentId", DataAccess.GetData(sqlStudents));
+            UIUtilities.Bind(cmbStudents, "FullName", "StudentId", DataAccess.GetData(sqlStudents), addEmptyRow: true, "-- Select a Student --");
         }
 
         private void LoadCars()
@@ -262,7 +268,7 @@ namespace DrivingSchoolManagementSystem
 		                                    ' (' + CONVERT(VARCHAR, LicensePlate)
 		                                    + ')' AS CarDescription 
                                     FROM Cars";
-            UIUtilities.Bind(cmbCars, "CarDescription", "CarId", DataAccess.GetData(sqlCars));
+            UIUtilities.Bind(cmbCars, "CarDescription", "CarId", DataAccess.GetData(sqlCars), addEmptyRow: true, "-- Select a Car --");
         }
 
         private void LoadFirstLesson()
@@ -313,14 +319,15 @@ namespace DrivingSchoolManagementSystem
         {
             int instructorId = Convert.ToInt32(dataRow["InstructorID"]);
             int studentId = Convert.ToInt32(dataRow["StudentID"]);
-            int carId = Convert.ToInt32(dataRow["CarID"]);
+            int carId = dataRow["CarID"] == DBNull.Value ? 0 : Convert.ToInt32(dataRow["CarID"]);
             Time lessonStartTime = HelperMethods.From24HourString(dataRow["LessonStartTime"].ToString());
             Time lessonEndTime = HelperMethods.From24HourString(dataRow["LessonEndTime"].ToString());
 
             txtId.Text = dataRow["LessonID"].ToString();
             cmbStudents.SelectedValue = studentId;
             cmbInstructors.SelectedValue = instructorId;
-            cmbCars.SelectedValue = carId;
+            if (carId != 0) cmbCars.SelectedValue = carId;
+            else cmbCars.SelectedIndex = 0;
 
             dteLessonDate.Value = (DateTime)dataRow["LessonDate"];
 
@@ -422,11 +429,11 @@ namespace DrivingSchoolManagementSystem
             int lessonId = Convert.ToInt32(txtId.Text);
             int studentId = Convert.ToInt32(cmbStudents.SelectedValue);
             int instructorId = Convert.ToInt32(cmbInstructors.SelectedValue);
-            int carId = Convert.ToInt32(cmbCars.SelectedValue);
+            int? carId = cmbCars.SelectedIndex > 0 ? Convert.ToInt32(cmbCars.SelectedValue) : null;
             DateTime lessonDate = dteLessonDate.Value;
 
             string startTimePeriod;
-            string endTimePeriod;   
+            string endTimePeriod;
             if (rdoStartTimeAM.Checked)
             {
                 startTimePeriod = "AM";
@@ -458,7 +465,7 @@ namespace DrivingSchoolManagementSystem
             if (rdoPractical.Checked)
             {
                 lessonType = "Practical";
-                
+
             }
             else
             {
@@ -468,7 +475,7 @@ namespace DrivingSchoolManagementSystem
             if (startTime.CompareTo(endTime) > 0) durationInMinutes = 0;
 
             #endregion
-            
+
 
             timesErrorMessages = Validator.GetTimesErrorMessages(startTime, endTime, durationInMinutes);
             if (timesErrorMessages.Length > 0)
@@ -480,31 +487,41 @@ namespace DrivingSchoolManagementSystem
                             startTime, endTime, lessonId) &&
                     Validator.ValidateLessonStudentDate(studentId, lessonDate, lessonId))
             {
+                string atCarId = "@Car_ID";
+                string atPickupLocation = "@Pickup_Location";
                 string sql = $@"
                     UPDATE Lessons
                      SET
                         StudentID = {studentId},
                         InstructorID = {instructorId},
-                        CarID = {carId},
+                        CarID = {(carId == null ? atCarId : carId.Value)},
                         LessonType = '{lessonType}',
                         LessonMinutesDuration = {durationInMinutes},
-                        PickupLocation = '{(pickupLocation == string.Empty ? DBNull.Value : pickupLocation)}',
+                        PickupLocation = {(pickupLocation == string.Empty ? atPickupLocation : FormatToDB(pickupLocation))},
                         LessonEndTime = '{endTime.ToDBFormatString()}',
                         LessonStartTime = '{startTime.ToDBFormatString()}',
                         LessonDate = '{lessonDate}'
                         WHERE LessonID = {currentLessonId} 
                     ";
-                int rowsAffected = DataAccess.SendData(sql);
+
+                int rowsAffected;
+                if (carId == null && pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atCarId, atPickupLocation);
+
+                else if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId: atCarId);
+
+                else if (pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atPickupLocation: atPickupLocation);
+
+                else rowsAffected = DataAccess.SendData(sql);
 
                 if (rowsAffected == 1)
                 {
                     MessageBox.Show("Lesson was updated.");
-                    int oldDuration = HelperMethods.GetOldDuration(studentId);
+                    int oldDuration = HelperMethods.GetOldDuration(lessonId);
                     if (oldDuration != durationInMinutes)
                     {
-                        int durationForFee = oldDuration >  durationInMinutes ?
+                        int durationForFee = oldDuration > durationInMinutes ?
                                 oldDuration - durationInMinutes : durationInMinutes - oldDuration;
-                        HelperMethods.UpdateStudentFees(durationForFee, studentId); 
+                        HelperMethods.UpdateStudentFees(durationForFee, studentId);
                     }
                 }
                 else
@@ -521,7 +538,7 @@ namespace DrivingSchoolManagementSystem
 
                 throw new Exception(BusinessRulesConstants.BR_ERROR_MESSAGE);
             }
-            
+
         }
 
         private void CreateLesson()
@@ -529,7 +546,7 @@ namespace DrivingSchoolManagementSystem
             #region Get TheData
             int studentId = Convert.ToInt32(cmbStudents.SelectedValue);
             int instructorId = Convert.ToInt32(cmbInstructors.SelectedValue);
-            int carId = Convert.ToInt32(cmbCars.SelectedValue);
+            int? carId = cmbCars.SelectedIndex > 0 ? Convert.ToInt32(cmbCars.SelectedValue) : null;
             DateTime lessonDate = dteLessonDate.Value;
 
             string startTimePeriod;
@@ -575,7 +592,7 @@ namespace DrivingSchoolManagementSystem
 
             #endregion
 
-            timesErrorMessages =  Validator.GetTimesErrorMessages(startTime, endTime, durationInMinutes);
+            timesErrorMessages = Validator.GetTimesErrorMessages(startTime, endTime, durationInMinutes);
             if (timesErrorMessages.Length > 0)
             {
                 throw new Exception(BusinessRulesConstants.BR_ERROR_MESSAGE_TIMES);
@@ -585,41 +602,49 @@ namespace DrivingSchoolManagementSystem
                             startTime, endTime) &&
                     Validator.ValidateLessonStudentDate(studentId, lessonDate))
             {
-                    string sql = $@"
-                Insert Into Lessons
-                (
-                    StudentID,InstructorID,CarID,
-                    LessonType,LessonMinutesDuration,
-                    PickupLocation,LessonEndTime,
-                    LessonStartTime,LessonDate
-                ) 
-                VALUES
-                (
-                    {studentId},
-                    {instructorId},
-                    {carId},
-                    '{lessonType}',
-                    {durationInMinutes},
-                    '{(pickupLocation == string.Empty ? DBNull.Value : pickupLocation)}',
-                    '{endTime.ToDBFormatString()}',
-                    '{startTime.ToDBFormatString()}',
-                    '{lessonDate}'
-                )
+                string atCarId = "@CarID";
+                string atPickupLocation = "@PickupLocation";
+                string sql = $@"
+                            Insert Into Lessons
+                            (
+                                StudentID,InstructorID,CarID,
+                                LessonType,LessonMinutesDuration,
+                                PickupLocation,LessonEndTime,
+                                LessonStartTime,LessonDate
+                            ) 
+                            VALUES
+                            (
+                                {studentId},
+                                {instructorId},
+                                {(carId == null ? atCarId : carId.Value)},
+                                '{lessonType}',
+                                {durationInMinutes},
+                                '{(pickupLocation == string.Empty ? atPickupLocation : pickupLocation)}',
+                                '{endTime.ToDBFormatString()}',
+                                '{startTime.ToDBFormatString()}',
+                                '{lessonDate}'
+                            )
                 ";
+                int rowsAffected;
+                if (carId == null && pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atCarId, atPickupLocation);
 
-                    int rowsAffected = DataAccess.SendData(sql);
+                else if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId);
 
-                    if (rowsAffected == 1)
-                    {
-                        MessageBox.Show("Lesson was created.");
-                        HelperMethods.UpdateStudentFees(durationInMinutes, studentId);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Failed to save Assignment");
-                    }
+                else if (pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atPickupLocation);
 
-                    LoadFirstLesson();
+                else rowsAffected = DataAccess.SendData(sql);
+
+                if (rowsAffected == 1)
+                {
+                    MessageBox.Show("Lesson was created.");
+                    HelperMethods.UpdateStudentFees(durationInMinutes, studentId);
+                }
+                else
+                {
+                    MessageBox.Show("Failed to save Assignment");
+                }
+
+                LoadFirstLesson();
             }
             else
             {
@@ -629,7 +654,7 @@ namespace DrivingSchoolManagementSystem
                 throw new Exception(BusinessRulesConstants.BR_ERROR_MESSAGE);
 
             }
-            
+
         }
 
         private void DeleteAssignment()
@@ -663,30 +688,18 @@ namespace DrivingSchoolManagementSystem
                 if (sender == btnFirst)
                 {
                     currentLessonId = firstLessonId;
-                    //currentStudentId = firstStudentId;
-                    //currentInstructorId = firstInstructorId;
-                    //currentCarId = firstCarId;
                 }
                 else if (sender == btnNext)
                 {
                     currentLessonId = nextLessonId.Value;
-                    //currentStudentId = nextStudentId.Value;   // because they are nullable
-                    //currentInstructorId = nextInstructorId.Value;
-                    //currentCarId = nextCarId.Value;
                 }
                 else if (sender == btnPrevious)
                 {
                     currentLessonId = previousLessonId.Value;
-                    //currentStudentId = previousStudentId.Value;   // because they are nullable
-                    //currentInstructorId = previousInstructorId.Value;
-                    //currentCarId = previousCarId.Value;
                 }
                 else if (sender == btnLast)
                 {
                     currentLessonId = lastLessonId;
-                    //currentStudentId = lastStudentId;
-                    //currentInstructorId = lastInstructorId;
-                    //currentCarId = lastCarId;
                 }
                 else return;
 
@@ -716,9 +729,9 @@ namespace DrivingSchoolManagementSystem
             if (previousLessonId != null)
                 btnFirst.Enabled = enable;
             else btnFirst.Enabled = !enable;
-            
-            if(nextLessonId != null)
-            btnLast.Enabled = enable;
+
+            if (nextLessonId != null)
+                btnLast.Enabled = enable;
             else btnLast.Enabled = !enable;
         }
 
@@ -783,6 +796,11 @@ namespace DrivingSchoolManagementSystem
             string errorMessage = string.Empty;
             TextBox textBox = (TextBox)sender;
 
+            if (sender == txtPickupLocation && txtPickupLocation.Text == string.Empty)
+            {
+                e.Cancel = false;
+                return;
+            }
             if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
             {
                 if (!(sender == txtEndTimeMin ||
@@ -793,12 +811,21 @@ namespace DrivingSchoolManagementSystem
                 }
             }
 
-            if ((sender == txtEndTimeHour || sender == txtStartTimeHour) &&
-                (!Validator.ValidateHour(txtStartTimeHour.Text) ||
-                    !Validator.ValidateHour(txtEndTimeHour.Text)))
+            if (sender == txtStartTimeHour)
             {
-                errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
-                e.Cancel = true;
+                if (Validator.ValidateHour(txtStartTimeHour.Text) == false)
+                {
+                    errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
+                    e.Cancel = true;
+                }
+            }
+            if (sender == txtEndTimeHour)
+            {
+                if (Validator.ValidateHour(txtEndTimeHour.Text) == false)
+                {
+                    errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
+                    e.Cancel = true;
+                }
             }
 
             if (sender == txtEndTimeMin || sender == txtStartTimeMin)
@@ -827,6 +854,9 @@ namespace DrivingSchoolManagementSystem
                     $" (Appt No. is optional) - city and province can be added";
                 e.Cancel = true;
             }
+
+
+
             errorProvider1.SetError(textBox, errorMessage);
         }
 
@@ -835,8 +865,12 @@ namespace DrivingSchoolManagementSystem
             string errorMessage = string.Empty;
             ComboBox comboBox = (ComboBox)sender;
 
-            if (comboBox.SelectedIndex == -1)   // will change this
+            if (comboBox.SelectedIndex <= 0)   // will change this
             {
+                if (sender == cmbCars && comboBox.SelectedIndex == 0)
+                {
+                    return;
+                }
                 errorMessage = $"{comboBox.Tag} cannot be empty, please select a value";
                 e.Cancel = true;
             }
@@ -860,6 +894,10 @@ namespace DrivingSchoolManagementSystem
 
         #region Other Methods
 
+        public string FormatToDB(string value)
+        {
+            return $"'{value}'";
+        }
         private void DisplayExceptionMessage(Exception ex)
         {
             MessageBox.Show(ex.Message, ex.GetType().ToString());
@@ -871,5 +909,10 @@ namespace DrivingSchoolManagementSystem
         }
 
         #endregion
+
+        private void frmLessons_Leave(object sender, EventArgs e)
+        {
+            ClearParentStatusStrip();
+        }
     }
 }

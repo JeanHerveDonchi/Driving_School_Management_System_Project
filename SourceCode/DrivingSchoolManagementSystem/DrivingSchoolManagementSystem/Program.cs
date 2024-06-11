@@ -12,7 +12,7 @@ namespace DrivingSchoolManagementSystem
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
             Application.Run(new frmMDIParent());
-            //Application.Run(new frmLessons());
+            //Application.Run(new frmBrowseInstructors());
 
         }
     }
