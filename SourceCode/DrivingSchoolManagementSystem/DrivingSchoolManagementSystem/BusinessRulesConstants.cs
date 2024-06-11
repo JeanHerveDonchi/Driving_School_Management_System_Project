@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Windows.Forms;
 
 namespace DrivingSchoolManagementSystem
 {
@@ -14,6 +16,21 @@ namespace DrivingSchoolManagementSystem
         public const int MINIMUM_STUDENT_AGE = 16;
         public const int SCHOOL_ADMISSION_START_YEAR = 2016;
         public const string COUNTRY = "Canada";
+        public const int MAX_LESSON_BOOKING_NUM_YEARS_SPAN = 3;
+        public const int MIN_LESSON_DURATION = 30;
+        public const int MAX_LESSON_DURATION = 180;
+
+        #region Error messages
+        public const string BR_ERROR_MESSAGE = "Error messages when creating lesson";
+        public const string BR_ERROR_MESSAGE_TIMES = "Error messages in times when creating lesson";
+        public const string BR_ERROR_MESSAGE_DURATION_START_END = "Error occured please check your start and end times";
+        public const string BR_ERROR_MESSAGE_DURATION_MAX_MINUTES = "Cannot create lesson of less than 30 minutes or more than 3 hours";
+        public static string BR_ERROR_MESSAGE_DURATION_TIMES = $"Cannot create lesson out of open hours";
+
+        #endregion
+
+        public static Time OPEN_TIME = new Time(8, 0, "AM");
+        public static Time CLOSE_TIME = new Time(5,0,"PM");
 
         public static readonly HashSet<string> CANADA_VALID_AREA_CODES = new HashSet<string> 
         {

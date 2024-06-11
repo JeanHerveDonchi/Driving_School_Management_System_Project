@@ -581,7 +581,8 @@ namespace DrivingSchoolManagementSystem
             DateTimePicker dateTime = (DateTimePicker)sender;
             if (sender == dteAdmission && !Validator.ValidateAdmissionDate(dteAdmission.Value))
             {
-                errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date.";
+               errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date or " +
+                    $"less than Year {BusinessRulesConstants.SCHOOL_HIRE_START_YEAR}.";
                e.Cancel = true;
             }
             if (sender == dteBirth)
@@ -590,7 +591,8 @@ namespace DrivingSchoolManagementSystem
                 if (!Validator.ValidateStudentAge(age))
                 {
                     //this would not normally happen
-                    errorMessage = $"{dateTime.Tag} is not valid, a Student must be atleast 16 years of age.";
+                    errorMessage = $"{dateTime.Tag} is not valid, a Student must be atleast " +
+                        $"{BusinessRulesConstants.MINIMUM_STUDENT_AGE} years of age.";
                    e.Cancel = true;
                 }
 

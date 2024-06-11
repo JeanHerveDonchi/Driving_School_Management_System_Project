@@ -96,5 +96,155 @@ namespace DrivingSchoolManagementSystem
 
         #endregion
 
+        #region Lesson Validations
+
+        public static bool ValidateLessonDate(DateTime lessonDate)
+        {
+            return (lessonDate >= DateTime.Now 
+                    && lessonDate <= 
+                    new DateTime(
+                        DateTime.Now.Year + 
+                            BusinessRulesConstants.MAX_LESSON_BOOKING_NUM_YEARS_SPAN,
+                        1,
+                        1
+                        )
+                    );
+        }
+
+        public static bool ValidateHour(string hour)
+        {
+            // Check if the hour is a valid integer
+            if (int.TryParse(hour, out int hourValue))
+            {
+                // Check if the hour is within the range of 1 to 12
+                if (hourValue >= 1 && hourValue <= 12)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool ValidateMinute(string minute)
+        {
+            // Check if the minute is a valid integer
+            if (int.TryParse(minute, out int minuteValue))
+            {
+                // Check if the minute is within the range of 0 to 59
+                if (minuteValue >= 0 && minuteValue <= 59)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool ValidateLessonEndTime(Time startTime, Time endTime)
+        {
+            // Compare the end time with the start time
+            if (endTime.CompareTo(startTime) > 0)
+            {
+                return true; // End time is greater than start time
+            }
+            else
+            {
+                return false; // End time is less than or equal to start time
+            }
+        }
+        #endregion
+
+        #region BR Validations
+
+        public static bool ValidateLessonInstructorDateAndTime(int instructorId, DateTime lessonDate, Time startTime, Time endTime, int lessonId = -1)
+        {
+            // checks all conditions for overlapping times, dates intructors - Lessons (all possible scenarios)
+
+            string lessonIdCondition = lessonId != -1 ? $"AND LessonID != {lessonId}" : "";
+            string query = $@"
+                SELECT COUNT(*)
+                FROM Lessons
+                WHERE InstructorID = {instructorId}
+                AND CAST(LessonDate AS DATE) = '{lessonDate.Year}-{lessonDate.Month}-{lessonDate.Day}'
+                AND (
+                    (CAST(LessonStartTime AS TIME(7)) <= '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) > '{startTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) < '{endTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) >= '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) >= '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) <= '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) = '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) = '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonEndTime AS TIME(7)) = '{startTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) = '{endTime.ToDBFormatString()}')
+                )
+                {lessonIdCondition}";
+
+            int existingLessonsCount = Convert.ToInt32(DataAccess.GetValue(query));
+            return existingLessonsCount == 0;
+        }
+
+        public static bool ValidateLessonStudentDate(int studentId, DateTime lessonDate, int lessonId = -1)
+        {
+            string lessonIdCondition = lessonId != -1 ? $"AND LessonID != {lessonId}" : "";
+            string query = $@"
+                SELECT COUNT(*)
+                FROM Lessons
+                WHERE StudentID = {studentId}
+                AND CAST(LessonDate AS DATE) = '{lessonDate.Year}-{lessonDate.Month}-{lessonDate.Day}'
+                {lessonIdCondition}";
+
+            int existingLessonsCount = Convert.ToInt32(DataAccess.GetValue(query));
+            return existingLessonsCount == 0;
+        }
+
+
+        public static string[] GetLessonErrorMessages(int instructorId, int studentId, DateTime lessonDate, Time startTime, Time endTime, int lessonId = -1)
+        {
+            var errorMessages = new List<string>();
+
+            bool isInstructorAvailable =
+                        lessonId != -1 ?
+                        ValidateLessonInstructorDateAndTime(instructorId, lessonDate, startTime, endTime) :
+                        ValidateLessonInstructorDateAndTime(instructorId, lessonDate, startTime, endTime, lessonId);
+
+            if (!isInstructorAvailable)
+            {
+                errorMessages.Add("The instructor is not available at the specified time.");
+            }
+
+            bool isStudentAvailable =
+                lessonId != -1 ?
+                        ValidateLessonStudentDate(studentId, lessonDate) :
+                        ValidateLessonStudentDate(studentId, lessonDate, lessonId);
+            if (!isStudentAvailable)
+            {
+                errorMessages.Add("The student already has a lesson scheduled on this date.");
+            }
+
+            return errorMessages.ToArray();
+        }
+
+        public static string[] GetTimesErrorMessages(Time startTime, Time endTime, int durationInMinutes)
+        {
+            List<string> errors = new();
+            if (startTime.CompareTo(BusinessRulesConstants.OPEN_TIME) < 0 ||
+                    startTime.CompareTo(BusinessRulesConstants.CLOSE_TIME) > 0)  // less than open time or greater than closing time
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_TIMES);
+            }
+            if (endTime.CompareTo(BusinessRulesConstants.OPEN_TIME) < 0 ||
+                    endTime.CompareTo(BusinessRulesConstants.CLOSE_TIME) > 0)
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_TIMES);
+            }
+            if (durationInMinutes <= 0)
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_START_END);
+            }
+            if (durationInMinutes > 0 && (durationInMinutes < BusinessRulesConstants.MIN_LESSON_DURATION
+                        || durationInMinutes > BusinessRulesConstants.MAX_LESSON_DURATION))
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_MAX_MINUTES);
+            }
+            return errors.ToArray();
+        }
+
+        #endregion
     }
 }

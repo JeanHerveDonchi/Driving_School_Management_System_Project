@@ -46,6 +46,7 @@
             maintenanceToolStripMenuItem = new ToolStripMenuItem();
             instructorsToolStripMenuItem = new ToolStripMenuItem();
             studentsToolStripMenuItem = new ToolStripMenuItem();
+            lessonsToolStripMenuItem = new ToolStripMenuItem();
             editMenu = new ToolStripMenuItem();
             undoToolStripMenuItem = new ToolStripMenuItem();
             redoToolStripMenuItem = new ToolStripMenuItem();
@@ -192,7 +193,7 @@
             // 
             // maintenanceToolStripMenuItem
             // 
-            maintenanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { instructorsToolStripMenuItem, studentsToolStripMenuItem });
+            maintenanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { instructorsToolStripMenuItem, studentsToolStripMenuItem, lessonsToolStripMenuItem });
             maintenanceToolStripMenuItem.Name = "maintenanceToolStripMenuItem";
             maintenanceToolStripMenuItem.Size = new Size(88, 20);
             maintenanceToolStripMenuItem.Text = "Maintenance";
@@ -200,7 +201,7 @@
             // instructorsToolStripMenuItem
             // 
             instructorsToolStripMenuItem.Name = "instructorsToolStripMenuItem";
-            instructorsToolStripMenuItem.Size = new Size(130, 22);
+            instructorsToolStripMenuItem.Size = new Size(180, 22);
             instructorsToolStripMenuItem.Tag = "instructors";
             instructorsToolStripMenuItem.Text = "Instructors";
             instructorsToolStripMenuItem.Click += ShowNewForm;
@@ -208,10 +209,18 @@
             // studentsToolStripMenuItem
             // 
             studentsToolStripMenuItem.Name = "studentsToolStripMenuItem";
-            studentsToolStripMenuItem.Size = new Size(130, 22);
+            studentsToolStripMenuItem.Size = new Size(180, 22);
             studentsToolStripMenuItem.Tag = "students";
             studentsToolStripMenuItem.Text = "Students";
             studentsToolStripMenuItem.Click += ShowNewForm;
+            // 
+            // lessonsToolStripMenuItem
+            // 
+            lessonsToolStripMenuItem.Name = "lessonsToolStripMenuItem";
+            lessonsToolStripMenuItem.Size = new Size(180, 22);
+            lessonsToolStripMenuItem.Tag = "lessons";
+            lessonsToolStripMenuItem.Text = "Lessons";
+            lessonsToolStripMenuItem.Click += ShowNewForm;
             // 
             // editMenu
             // 
@@ -585,6 +594,7 @@
         private ToolStripMenuItem studentsToolStripMenuItem;
         private ToolStripProgressBar tlstrpProgressBar;
         private ToolStripStatusLabel tlstrpStatus;
+        private ToolStripMenuItem lessonsToolStripMenuItem;
     }
 }
 

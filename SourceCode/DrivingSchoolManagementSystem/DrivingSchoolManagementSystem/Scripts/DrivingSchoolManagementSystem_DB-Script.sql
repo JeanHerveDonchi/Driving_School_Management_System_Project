@@ -132,6 +132,10 @@ ALTER COLUMN PickupLocation VARCHAR(255) NULL;
 USE DrivingSchoolDB;
 GO
 
+-- Modify the CarId column to be nullable
+ALTER TABLE Lessons
+ALTER COLUMN CarId INT NULL;
+
 -- Insert students with some having learners licence numbers and some being NULL
 INSERT INTO students (FirstName, LastName, DateOfBirth, HasLearnersLicence, AdmissionDate, PhoneNumber, Email, LearnersLicenceNumber, age, address, Duefees)
 VALUES 

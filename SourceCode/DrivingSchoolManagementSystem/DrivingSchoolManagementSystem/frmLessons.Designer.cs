@@ -131,7 +131,6 @@
             rdoPractical.Name = "rdoPractical";
             rdoPractical.Size = new Size(169, 19);
             rdoPractical.TabIndex = 1;
-            rdoPractical.TabStop = true;
             rdoPractical.Text = "Practical(Behind the wheel)";
             rdoPractical.UseVisualStyleBackColor = true;
             // 
@@ -142,7 +141,6 @@
             rdoTheoric.Name = "rdoTheoric";
             rdoTheoric.Size = new Size(64, 19);
             rdoTheoric.TabIndex = 0;
-            rdoTheoric.TabStop = true;
             rdoTheoric.Tag = "Theoric";
             rdoTheoric.Text = "Theoric";
             rdoTheoric.UseVisualStyleBackColor = true;
@@ -154,6 +152,7 @@
             cmbCars.Name = "cmbCars";
             cmbCars.Size = new Size(537, 23);
             cmbCars.TabIndex = 38;
+            cmbCars.Validating += Cmb_Validation;
             // 
             // label8
             // 
@@ -171,6 +170,7 @@
             cmbInstructors.Name = "cmbInstructors";
             cmbInstructors.Size = new Size(537, 23);
             cmbInstructors.TabIndex = 36;
+            cmbInstructors.Validating += Cmb_Validation;
             // 
             // label7
             // 
@@ -188,6 +188,7 @@
             cmbStudents.Name = "cmbStudents";
             cmbStudents.Size = new Size(537, 23);
             cmbStudents.TabIndex = 34;
+            cmbStudents.Validating += Cmb_Validation;
             // 
             // label6
             // 
@@ -219,7 +220,6 @@
             rdoEndTimePM.Name = "rdoEndTimePM";
             rdoEndTimePM.Size = new Size(43, 19);
             rdoEndTimePM.TabIndex = 31;
-            rdoEndTimePM.TabStop = true;
             rdoEndTimePM.Text = "PM";
             rdoEndTimePM.UseVisualStyleBackColor = true;
             // 
@@ -230,7 +230,6 @@
             rdoEndTimeAM.Name = "rdoEndTimeAM";
             rdoEndTimeAM.Size = new Size(44, 19);
             rdoEndTimeAM.TabIndex = 30;
-            rdoEndTimeAM.TabStop = true;
             rdoEndTimeAM.Text = "AM";
             rdoEndTimeAM.UseVisualStyleBackColor = true;
             // 
@@ -250,6 +249,7 @@
             txtEndTimeMin.PlaceholderText = "mm";
             txtEndTimeMin.Size = new Size(34, 23);
             txtEndTimeMin.TabIndex = 29;
+            txtEndTimeMin.Validating += Txt_Validating;
             // 
             // txtEndTimeHour
             // 
@@ -258,6 +258,7 @@
             txtEndTimeHour.PlaceholderText = "hh";
             txtEndTimeHour.Size = new Size(34, 23);
             txtEndTimeHour.TabIndex = 27;
+            txtEndTimeHour.Validating += Txt_Validating;
             // 
             // txtDuration
             // 
@@ -284,6 +285,7 @@
             txtPickupLocation.Size = new Size(537, 23);
             txtPickupLocation.TabIndex = 19;
             txtPickupLocation.Tag = "Address";
+            txtPickupLocation.Validating += Txt_Validating;
             // 
             // label11
             // 
@@ -304,6 +306,7 @@
             dteLessonDate.TabIndex = 7;
             dteLessonDate.Tag = "Lesson Date";
             dteLessonDate.Value = new DateTime(2000, 12, 31, 0, 0, 0, 0);
+            dteLessonDate.Validating += Dte_Validating;
             // 
             // label5
             // 
@@ -352,7 +355,6 @@
             rdoStartTimePM.Name = "rdoStartTimePM";
             rdoStartTimePM.Size = new Size(43, 19);
             rdoStartTimePM.TabIndex = 31;
-            rdoStartTimePM.TabStop = true;
             rdoStartTimePM.Text = "PM";
             rdoStartTimePM.UseVisualStyleBackColor = true;
             // 
@@ -363,7 +365,6 @@
             rdoStartTimeAM.Name = "rdoStartTimeAM";
             rdoStartTimeAM.Size = new Size(44, 19);
             rdoStartTimeAM.TabIndex = 30;
-            rdoStartTimeAM.TabStop = true;
             rdoStartTimeAM.Text = "AM";
             rdoStartTimeAM.UseVisualStyleBackColor = true;
             // 
@@ -383,6 +384,7 @@
             txtStartTimeMin.PlaceholderText = "mm";
             txtStartTimeMin.Size = new Size(34, 23);
             txtStartTimeMin.TabIndex = 29;
+            txtStartTimeMin.Validating += Txt_Validating;
             // 
             // txtStartTimeHour
             // 
@@ -391,6 +393,7 @@
             txtStartTimeHour.PlaceholderText = "hh";
             txtStartTimeHour.Size = new Size(34, 23);
             txtStartTimeHour.TabIndex = 27;
+            txtStartTimeHour.Validating += Txt_Validating;
             // 
             // btnAdd
             // 
@@ -503,6 +506,7 @@
             Controls.Add(grpLessons);
             Controls.Add(label1);
             Name = "frmLessons";
+            Tag = "";
             Text = "frmLessons";
             Load += frmLessons_Load;
             grpLessons.ResumeLayout(false);
