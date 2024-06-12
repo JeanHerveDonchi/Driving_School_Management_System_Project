@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DrivingSchoolManagementSystem
 {
@@ -179,6 +180,30 @@ namespace DrivingSchoolManagementSystem
             return existingLessonsCount == 0;
         }
 
+        public static bool ValidateLessonCarDateAndTime(int carId, DateTime lessonDate, Time startTime, Time endTime, int lessonId = -1)
+        {
+            // checks all conditions for overlapping times, dates intructors - Lessons (all possible scenarios)
+
+            string lessonIdCondition = lessonId != -1 ? $"AND LessonID != {lessonId}" : "";
+            string query = $@"
+                SELECT COUNT(*)
+                FROM Lessons
+                WHERE CarID = {carId}
+                AND CAST(LessonDate AS DATE) = '{lessonDate.Year}-{lessonDate.Month}-{lessonDate.Day}'
+                AND (
+                    (CAST(LessonStartTime AS TIME(7)) <= '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) > '{startTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) < '{endTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) >= '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) >= '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) <= '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) = '{startTime.ToDBFormatString()}' AND CAST(LessonEndTime AS TIME(7)) = '{endTime.ToDBFormatString()}')
+                    OR (CAST(LessonEndTime AS TIME(7)) = '{startTime.ToDBFormatString()}')
+                    OR (CAST(LessonStartTime AS TIME(7)) = '{endTime.ToDBFormatString()}')
+                )
+                {lessonIdCondition}";
+
+            int existingLessonsCount = Convert.ToInt32(DataAccess.GetValue(query));
+            return existingLessonsCount == 0;
+        }
+
         public static bool ValidateLessonStudentDate(int studentId, DateTime lessonDate, int lessonId = -1)
         {
             string lessonIdCondition = lessonId != -1 ? $"AND LessonID != {lessonId}" : "";
@@ -194,7 +219,7 @@ namespace DrivingSchoolManagementSystem
         }
 
 
-        public static string[] GetLessonErrorMessages(int instructorId, int studentId, DateTime lessonDate, Time startTime, Time endTime, int lessonId = -1)
+        public static string[] GetLessonErrorMessages(int instructorId, int studentId, DateTime lessonDate, Time startTime, Time endTime, int lessonId = -1, int carId = 0)
         {
             var errorMessages = new List<string>();
 
@@ -203,9 +228,20 @@ namespace DrivingSchoolManagementSystem
                         ValidateLessonInstructorDateAndTime(instructorId, lessonDate, startTime, endTime) :
                         ValidateLessonInstructorDateAndTime(instructorId, lessonDate, startTime, endTime, lessonId);
 
+            
             if (!isInstructorAvailable)
             {
                 errorMessages.Add("The instructor is not available at the specified time.");
+            }
+
+            bool isCarAvailable =
+                    lessonId != -1 ?
+                    ValidateLessonCarDateAndTime(carId, lessonDate, startTime, endTime) :
+                    ValidateLessonCarDateAndTime(carId, lessonDate, startTime, endTime, lessonId);
+
+            if (!isCarAvailable)
+            {
+                errorMessages.Add("The car is not available at the specified time.");
             }
 
             bool isStudentAvailable =
@@ -223,6 +259,21 @@ namespace DrivingSchoolManagementSystem
         public static string[] GetTimesErrorMessages(Time startTime, Time endTime, int durationInMinutes)
         {
             List<string> errors = new();
+            if (!ValidateLessonEndTime(startTime,endTime))
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_START_END);
+                return errors.ToArray();
+            }
+            if (startTime.Hour == 12 && startTime.AmPm == "AM")
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_TIMES);
+                return errors.ToArray();
+            }
+            if (endTime.Hour == 12 && endTime.AmPm == "AM")
+            {
+                errors.Add(BusinessRulesConstants.BR_ERROR_MESSAGE_DURATION_TIMES);
+                return errors.ToArray();
+            }
             if (startTime.CompareTo(BusinessRulesConstants.OPEN_TIME) < 0 ||
                     startTime.CompareTo(BusinessRulesConstants.CLOSE_TIME) > 0)  // less than open time or greater than closing time
             {

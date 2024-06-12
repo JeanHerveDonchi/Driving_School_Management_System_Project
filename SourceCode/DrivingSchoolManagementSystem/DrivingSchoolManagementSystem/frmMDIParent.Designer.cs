@@ -42,13 +42,11 @@
             studentsToolStripMenuItem = new ToolStripMenuItem();
             lessonsToolStripMenuItem = new ToolStripMenuItem();
             browseInstructorsToolStripMenuItem = new ToolStripMenuItem();
+            browseStudentsToolStripMenuItem = new ToolStripMenuItem();
             editMenu = new ToolStripMenuItem();
             undoToolStripMenuItem = new ToolStripMenuItem();
             redoToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator6 = new ToolStripSeparator();
-            cutToolStripMenuItem = new ToolStripMenuItem();
-            copyToolStripMenuItem = new ToolStripMenuItem();
-            pasteToolStripMenuItem = new ToolStripMenuItem();
             toolStripSeparator7 = new ToolStripSeparator();
             selectAllToolStripMenuItem = new ToolStripMenuItem();
             viewMenu = new ToolStripMenuItem();
@@ -68,9 +66,13 @@
             toolStripSeparator1 = new ToolStripSeparator();
             toolStripSeparator2 = new ToolStripSeparator();
             statusStrip = new StatusStrip();
-            tlstrpProgressBar = new ToolStripProgressBar();
+            prgBar = new ToolStripProgressBar();
             tlstrpStatus = new ToolStripStatusLabel();
+            toolStripProgressLabel = new ToolStripStatusLabel();
             toolTip = new ToolTip(components);
+            toolStripButton1 = new ToolStripButton();
+            toolStripButton2 = new ToolStripButton();
+            toolStripButton3 = new ToolStripButton();
             menuStrip.SuspendLayout();
             toolStrip.SuspendLayout();
             statusStrip.SuspendLayout();
@@ -78,7 +80,7 @@
             // 
             // menuStrip
             // 
-            menuStrip.Items.AddRange(new ToolStripItem[] { fileMenu, maintenanceToolStripMenuItem, editMenu, viewMenu, windowsMenu, helpMenu });
+            menuStrip.Items.AddRange(new ToolStripItem[] { fileMenu, maintenanceToolStripMenuItem, editMenu, viewMenu, windowsMenu, helpMenu, aboutToolStripMenuItem });
             menuStrip.Location = new Point(0, 0);
             menuStrip.MdiWindowListItem = windowsMenu;
             menuStrip.Name = "menuStrip";
@@ -128,7 +130,7 @@
             // 
             // maintenanceToolStripMenuItem
             // 
-            maintenanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { instructorsToolStripMenuItem, studentsToolStripMenuItem, lessonsToolStripMenuItem, browseInstructorsToolStripMenuItem });
+            maintenanceToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { instructorsToolStripMenuItem, studentsToolStripMenuItem, lessonsToolStripMenuItem, browseInstructorsToolStripMenuItem, browseStudentsToolStripMenuItem });
             maintenanceToolStripMenuItem.Name = "maintenanceToolStripMenuItem";
             maintenanceToolStripMenuItem.Size = new Size(88, 20);
             maintenanceToolStripMenuItem.Text = "Maintenance";
@@ -136,7 +138,7 @@
             // instructorsToolStripMenuItem
             // 
             instructorsToolStripMenuItem.Name = "instructorsToolStripMenuItem";
-            instructorsToolStripMenuItem.Size = new Size(180, 22);
+            instructorsToolStripMenuItem.Size = new Size(171, 22);
             instructorsToolStripMenuItem.Tag = "instructors";
             instructorsToolStripMenuItem.Text = "Instructors";
             instructorsToolStripMenuItem.Click += ShowNewForm;
@@ -144,7 +146,7 @@
             // studentsToolStripMenuItem
             // 
             studentsToolStripMenuItem.Name = "studentsToolStripMenuItem";
-            studentsToolStripMenuItem.Size = new Size(180, 22);
+            studentsToolStripMenuItem.Size = new Size(171, 22);
             studentsToolStripMenuItem.Tag = "students";
             studentsToolStripMenuItem.Text = "Students";
             studentsToolStripMenuItem.Click += ShowNewForm;
@@ -152,7 +154,7 @@
             // lessonsToolStripMenuItem
             // 
             lessonsToolStripMenuItem.Name = "lessonsToolStripMenuItem";
-            lessonsToolStripMenuItem.Size = new Size(180, 22);
+            lessonsToolStripMenuItem.Size = new Size(171, 22);
             lessonsToolStripMenuItem.Tag = "lessons";
             lessonsToolStripMenuItem.Text = "Lessons";
             lessonsToolStripMenuItem.Click += ShowNewForm;
@@ -160,14 +162,22 @@
             // browseInstructorsToolStripMenuItem
             // 
             browseInstructorsToolStripMenuItem.Name = "browseInstructorsToolStripMenuItem";
-            browseInstructorsToolStripMenuItem.Size = new Size(180, 22);
+            browseInstructorsToolStripMenuItem.Size = new Size(171, 22);
             browseInstructorsToolStripMenuItem.Tag = "browseinstructors";
             browseInstructorsToolStripMenuItem.Text = "Browse Instructors";
             browseInstructorsToolStripMenuItem.Click += ShowNewForm;
             // 
+            // browseStudentsToolStripMenuItem
+            // 
+            browseStudentsToolStripMenuItem.Name = "browseStudentsToolStripMenuItem";
+            browseStudentsToolStripMenuItem.Size = new Size(171, 22);
+            browseStudentsToolStripMenuItem.Tag = "browsestudents";
+            browseStudentsToolStripMenuItem.Text = "Browse Students";
+            browseStudentsToolStripMenuItem.Click += ShowNewForm;
+            // 
             // editMenu
             // 
-            editMenu.DropDownItems.AddRange(new ToolStripItem[] { undoToolStripMenuItem, redoToolStripMenuItem, toolStripSeparator6, cutToolStripMenuItem, copyToolStripMenuItem, pasteToolStripMenuItem, toolStripSeparator7, selectAllToolStripMenuItem });
+            editMenu.DropDownItems.AddRange(new ToolStripItem[] { undoToolStripMenuItem, redoToolStripMenuItem, toolStripSeparator6, toolStripSeparator7, selectAllToolStripMenuItem });
             editMenu.Name = "editMenu";
             editMenu.Size = new Size(39, 20);
             editMenu.Text = "&Edit";
@@ -178,7 +188,7 @@
             undoToolStripMenuItem.ImageTransparentColor = Color.Black;
             undoToolStripMenuItem.Name = "undoToolStripMenuItem";
             undoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Z;
-            undoToolStripMenuItem.Size = new Size(180, 22);
+            undoToolStripMenuItem.Size = new Size(164, 22);
             undoToolStripMenuItem.Text = "&Undo";
             // 
             // redoToolStripMenuItem
@@ -187,54 +197,24 @@
             redoToolStripMenuItem.ImageTransparentColor = Color.Black;
             redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             redoToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.Y;
-            redoToolStripMenuItem.Size = new Size(180, 22);
+            redoToolStripMenuItem.Size = new Size(164, 22);
             redoToolStripMenuItem.Text = "&Redo";
             // 
             // toolStripSeparator6
             // 
             toolStripSeparator6.Name = "toolStripSeparator6";
-            toolStripSeparator6.Size = new Size(177, 6);
-            // 
-            // cutToolStripMenuItem
-            // 
-            cutToolStripMenuItem.Image = (Image)resources.GetObject("cutToolStripMenuItem.Image");
-            cutToolStripMenuItem.ImageTransparentColor = Color.Black;
-            cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            cutToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.X;
-            cutToolStripMenuItem.Size = new Size(180, 22);
-            cutToolStripMenuItem.Text = "Cu&t";
-            cutToolStripMenuItem.Click += CutToolStripMenuItem_Click;
-            // 
-            // copyToolStripMenuItem
-            // 
-            copyToolStripMenuItem.Image = (Image)resources.GetObject("copyToolStripMenuItem.Image");
-            copyToolStripMenuItem.ImageTransparentColor = Color.Black;
-            copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            copyToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-            copyToolStripMenuItem.Size = new Size(180, 22);
-            copyToolStripMenuItem.Text = "&Copy";
-            copyToolStripMenuItem.Click += CopyToolStripMenuItem_Click;
-            // 
-            // pasteToolStripMenuItem
-            // 
-            pasteToolStripMenuItem.Image = (Image)resources.GetObject("pasteToolStripMenuItem.Image");
-            pasteToolStripMenuItem.ImageTransparentColor = Color.Black;
-            pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            pasteToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-            pasteToolStripMenuItem.Size = new Size(180, 22);
-            pasteToolStripMenuItem.Text = "&Paste";
-            pasteToolStripMenuItem.Click += PasteToolStripMenuItem_Click;
+            toolStripSeparator6.Size = new Size(161, 6);
             // 
             // toolStripSeparator7
             // 
             toolStripSeparator7.Name = "toolStripSeparator7";
-            toolStripSeparator7.Size = new Size(177, 6);
+            toolStripSeparator7.Size = new Size(161, 6);
             // 
             // selectAllToolStripMenuItem
             // 
             selectAllToolStripMenuItem.Name = "selectAllToolStripMenuItem";
             selectAllToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.A;
-            selectAllToolStripMenuItem.Size = new Size(180, 22);
+            selectAllToolStripMenuItem.Size = new Size(164, 22);
             selectAllToolStripMenuItem.Text = "Select &All";
             // 
             // viewMenu
@@ -250,7 +230,7 @@
             toolBarToolStripMenuItem.CheckOnClick = true;
             toolBarToolStripMenuItem.CheckState = CheckState.Checked;
             toolBarToolStripMenuItem.Name = "toolBarToolStripMenuItem";
-            toolBarToolStripMenuItem.Size = new Size(180, 22);
+            toolBarToolStripMenuItem.Size = new Size(126, 22);
             toolBarToolStripMenuItem.Text = "&Toolbar";
             toolBarToolStripMenuItem.Click += ToolBarToolStripMenuItem_Click;
             // 
@@ -260,7 +240,7 @@
             statusBarToolStripMenuItem.CheckOnClick = true;
             statusBarToolStripMenuItem.CheckState = CheckState.Checked;
             statusBarToolStripMenuItem.Name = "statusBarToolStripMenuItem";
-            statusBarToolStripMenuItem.Size = new Size(180, 22);
+            statusBarToolStripMenuItem.Size = new Size(126, 22);
             statusBarToolStripMenuItem.Text = "&Status Bar";
             statusBarToolStripMenuItem.Click += StatusBarToolStripMenuItem_Click;
             // 
@@ -274,41 +254,41 @@
             // cascadeToolStripMenuItem
             // 
             cascadeToolStripMenuItem.Name = "cascadeToolStripMenuItem";
-            cascadeToolStripMenuItem.Size = new Size(180, 22);
+            cascadeToolStripMenuItem.Size = new Size(150, 22);
             cascadeToolStripMenuItem.Text = "&Cascade";
             cascadeToolStripMenuItem.Click += CascadeToolStripMenuItem_Click;
             // 
             // tileVerticalToolStripMenuItem
             // 
             tileVerticalToolStripMenuItem.Name = "tileVerticalToolStripMenuItem";
-            tileVerticalToolStripMenuItem.Size = new Size(180, 22);
+            tileVerticalToolStripMenuItem.Size = new Size(150, 22);
             tileVerticalToolStripMenuItem.Text = "Tile &Vertical";
             tileVerticalToolStripMenuItem.Click += TileVerticalToolStripMenuItem_Click;
             // 
             // tileHorizontalToolStripMenuItem
             // 
             tileHorizontalToolStripMenuItem.Name = "tileHorizontalToolStripMenuItem";
-            tileHorizontalToolStripMenuItem.Size = new Size(180, 22);
+            tileHorizontalToolStripMenuItem.Size = new Size(150, 22);
             tileHorizontalToolStripMenuItem.Text = "Tile &Horizontal";
             tileHorizontalToolStripMenuItem.Click += TileHorizontalToolStripMenuItem_Click;
             // 
             // closeAllToolStripMenuItem
             // 
             closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-            closeAllToolStripMenuItem.Size = new Size(180, 22);
+            closeAllToolStripMenuItem.Size = new Size(150, 22);
             closeAllToolStripMenuItem.Text = "C&lose All";
             closeAllToolStripMenuItem.Click += CloseAllToolStripMenuItem_Click;
             // 
             // arrangeIconsToolStripMenuItem
             // 
             arrangeIconsToolStripMenuItem.Name = "arrangeIconsToolStripMenuItem";
-            arrangeIconsToolStripMenuItem.Size = new Size(180, 22);
+            arrangeIconsToolStripMenuItem.Size = new Size(150, 22);
             arrangeIconsToolStripMenuItem.Text = "&Arrange Icons";
             arrangeIconsToolStripMenuItem.Click += ArrangeIconsToolStripMenuItem_Click;
             // 
             // helpMenu
             // 
-            helpMenu.DropDownItems.AddRange(new ToolStripItem[] { searchToolStripMenuItem, toolStripSeparator8, aboutToolStripMenuItem });
+            helpMenu.DropDownItems.AddRange(new ToolStripItem[] { searchToolStripMenuItem, toolStripSeparator8 });
             helpMenu.Name = "helpMenu";
             helpMenu.Size = new Size(44, 20);
             helpMenu.Text = "&Help";
@@ -318,23 +298,25 @@
             searchToolStripMenuItem.Image = (Image)resources.GetObject("searchToolStripMenuItem.Image");
             searchToolStripMenuItem.ImageTransparentColor = Color.Black;
             searchToolStripMenuItem.Name = "searchToolStripMenuItem";
-            searchToolStripMenuItem.Size = new Size(180, 22);
+            searchToolStripMenuItem.Size = new Size(109, 22);
             searchToolStripMenuItem.Text = "&Search";
             // 
             // toolStripSeparator8
             // 
             toolStripSeparator8.Name = "toolStripSeparator8";
-            toolStripSeparator8.Size = new Size(177, 6);
+            toolStripSeparator8.Size = new Size(106, 6);
             // 
             // aboutToolStripMenuItem
             // 
             aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            aboutToolStripMenuItem.Size = new Size(180, 22);
-            aboutToolStripMenuItem.Text = "&About ... ...";
+            aboutToolStripMenuItem.Size = new Size(52, 20);
+            aboutToolStripMenuItem.Tag = "about";
+            aboutToolStripMenuItem.Text = "About";
+            aboutToolStripMenuItem.Click += ShowNewForm;
             // 
             // toolStrip
             // 
-            toolStrip.Items.AddRange(new ToolStripItem[] { toolStripSeparator1, toolStripSeparator2 });
+            toolStrip.Items.AddRange(new ToolStripItem[] { toolStripSeparator1, toolStripSeparator2, toolStripButton1, toolStripButton2, toolStripButton3 });
             toolStrip.Location = new Point(0, 24);
             toolStrip.Name = "toolStrip";
             toolStrip.Size = new Size(737, 25);
@@ -353,7 +335,7 @@
             // 
             // statusStrip
             // 
-            statusStrip.Items.AddRange(new ToolStripItem[] { tlstrpProgressBar, tlstrpStatus });
+            statusStrip.Items.AddRange(new ToolStripItem[] { prgBar, tlstrpStatus, toolStripProgressLabel });
             statusStrip.Location = new Point(0, 501);
             statusStrip.Name = "statusStrip";
             statusStrip.Padding = new Padding(1, 0, 16, 0);
@@ -361,10 +343,10 @@
             statusStrip.TabIndex = 2;
             statusStrip.Text = "StatusStrip";
             // 
-            // tlstrpProgressBar
+            // prgBar
             // 
-            tlstrpProgressBar.Name = "tlstrpProgressBar";
-            tlstrpProgressBar.Size = new Size(100, 16);
+            prgBar.Name = "prgBar";
+            prgBar.Size = new Size(100, 16);
             // 
             // tlstrpStatus
             // 
@@ -372,10 +354,50 @@
             tlstrpStatus.Size = new Size(39, 17);
             tlstrpStatus.Text = "Status";
             // 
+            // toolStripProgressLabel
+            // 
+            toolStripProgressLabel.Name = "toolStripProgressLabel";
+            toolStripProgressLabel.Size = new Size(61, 17);
+            toolStripProgressLabel.Text = "Progress...";
+            // 
+            // toolStripButton1
+            // 
+            toolStripButton1.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton1.Image = Properties.Resources.instructor;
+            toolStripButton1.ImageTransparentColor = Color.Magenta;
+            toolStripButton1.Name = "toolStripButton1";
+            toolStripButton1.Size = new Size(23, 22);
+            toolStripButton1.Tag = "instructor";
+            toolStripButton1.Text = "toolStripButton1";
+            toolStripButton1.Click += ShowNewForm;
+            // 
+            // toolStripButton2
+            // 
+            toolStripButton2.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton2.Image = Properties.Resources.student;
+            toolStripButton2.ImageTransparentColor = Color.Magenta;
+            toolStripButton2.Name = "toolStripButton2";
+            toolStripButton2.Size = new Size(23, 22);
+            toolStripButton2.Tag = "student";
+            toolStripButton2.Text = "toolStripButton2";
+            toolStripButton2.Click += ShowNewForm;
+            // 
+            // toolStripButton3
+            // 
+            toolStripButton3.DisplayStyle = ToolStripItemDisplayStyle.Image;
+            toolStripButton3.Image = Properties.Resources.lesson;
+            toolStripButton3.ImageTransparentColor = Color.Magenta;
+            toolStripButton3.Name = "toolStripButton3";
+            toolStripButton3.Size = new Size(23, 22);
+            toolStripButton3.Tag = "lesson";
+            toolStripButton3.Text = "toolStripButton3";
+            toolStripButton3.Click += ShowNewForm;
+            // 
             // frmMDIParent
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.OldLace;
             ClientSize = new Size(737, 523);
             Controls.Add(statusStrip);
             Controls.Add(toolStrip);
@@ -409,7 +431,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tileHorizontalToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem fileMenu;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
@@ -417,9 +438,6 @@
         private System.Windows.Forms.ToolStripMenuItem editMenu;
         private System.Windows.Forms.ToolStripMenuItem undoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem redoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem viewMenu;
         private System.Windows.Forms.ToolStripMenuItem toolBarToolStripMenuItem;
@@ -435,10 +453,16 @@
         private ToolStripMenuItem maintenanceToolStripMenuItem;
         private ToolStripMenuItem instructorsToolStripMenuItem;
         private ToolStripMenuItem studentsToolStripMenuItem;
-        private ToolStripProgressBar tlstrpProgressBar;
+        private ToolStripProgressBar prgBar;
         private ToolStripStatusLabel tlstrpStatus;
         private ToolStripMenuItem lessonsToolStripMenuItem;
         private ToolStripMenuItem browseInstructorsToolStripMenuItem;
+        private ToolStripMenuItem browseStudentsToolStripMenuItem;
+        private ToolStripStatusLabel toolStripProgressLabel;
+        private ToolStripMenuItem aboutToolStripMenuItem;
+        private ToolStripButton toolStripButton1;
+        private ToolStripButton toolStripButton2;
+        private ToolStripButton toolStripButton3;
     }
 }
 

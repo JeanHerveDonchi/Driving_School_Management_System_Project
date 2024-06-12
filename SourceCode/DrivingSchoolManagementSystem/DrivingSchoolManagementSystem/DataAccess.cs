@@ -13,6 +13,8 @@ namespace DrivingSchoolManagementSystem
     {
         public static DataTable GetData(string sqlQuery)
         {
+            sqlQuery = SQLCleaner(sqlQuery);
+
             DataTable dt = new DataTable();
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
@@ -30,6 +32,7 @@ namespace DrivingSchoolManagementSystem
         public static DataSet GetData(params string[] sqlQueries)
         {
             string sqlQuery = string.Join(";", sqlQueries);
+            sqlQuery = SQLCleaner(sqlQuery);
 
             DataSet ds = new DataSet();
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
@@ -45,8 +48,10 @@ namespace DrivingSchoolManagementSystem
             return ds;
         }
 
-        public static int SendData(string sql, string? atCarId = null, string? atPickupLocation = null)
+        public static int SendData(string sql, string? atCarId = null)
         {
+            sql = SQLCleaner(sql);
+
             int rowsAffected;
 
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
@@ -56,10 +61,6 @@ namespace DrivingSchoolManagementSystem
                     if (atCarId != null)
                     {
                         cmd.Parameters.AddWithValue(atCarId, DBNull.Value);
-                    }
-                    if (atPickupLocation != null)
-                    {
-                        cmd.Parameters.AddWithValue(atPickupLocation, DBNull.Value);
                     }
                     conn.Open();
                     rowsAffected = cmd.ExecuteNonQuery();
@@ -72,6 +73,7 @@ namespace DrivingSchoolManagementSystem
 
         public static object GetValue(string sql)
         {
+            sql = SQLCleaner(sql);
             using (SqlConnection conn = new SqlConnection(GetConnectionString()))
             {
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
@@ -91,6 +93,19 @@ namespace DrivingSchoolManagementSystem
         {
             string connectionString = ConfigurationManager.ConnectionStrings["Default"].ConnectionString;
             return connectionString;
+        }
+
+        public static string SQLFix(string str)
+        {
+            return str.Replace("'", "''");
+        }
+
+        public static string SQLCleaner(string sqlStatement)
+        {
+            while (sqlStatement.Contains("  "))
+                sqlStatement = sqlStatement.Replace("  ", " ");
+
+            return sqlStatement.Replace(Environment.NewLine, "");
         }
     }
 }

@@ -16,6 +16,7 @@ namespace DrivingSchoolManagementSystem
         public const int MINIMUM_STUDENT_AGE = 16;
         public const int SCHOOL_ADMISSION_START_YEAR = 2016;
         public const string COUNTRY = "Canada";
+        public const string DEFAULT_LOCATION = "ON CAMPUS";
         public const int MAX_LESSON_BOOKING_NUM_YEARS_SPAN = 3;
         public const int MIN_LESSON_DURATION = 30;
         public const int MAX_LESSON_DURATION = 180;

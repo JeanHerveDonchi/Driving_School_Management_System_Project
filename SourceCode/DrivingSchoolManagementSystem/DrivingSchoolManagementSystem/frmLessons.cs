@@ -37,15 +37,27 @@ namespace DrivingSchoolManagementSystem
 
         #region Event Handlers
 
-        private void frmLessons_Load(object sender, EventArgs e)
+        private async void frmLessons_Load(object sender, EventArgs e)
         {
             try
             {
-                LoadInstructors();
-                LoadStudents();
-                LoadCars();
+                //grpLessons.Enabled = false;
+                Task instructortask = Task.Factory.StartNew(() => LoadInstructors());
+                Task studenttask = Task.Factory.StartNew(() => LoadStudents());
+                Task carstask = Task.Factory.StartNew(() => LoadCars());
+
+                await instructortask;
+                await studenttask;
+                await carstask;
+                //LoadInstructors();
+                //LoadStudents();
+                //LoadCars();
                 LoadFirstLesson();
+
+                this.StartParentProgressBar("Loading Lessons..", "Loading Finished");
                 SetState(FormState.View);
+                // grpLessons.Enabled = true
+
             }
             catch (Exception ex)
             {
@@ -77,7 +89,7 @@ namespace DrivingSchoolManagementSystem
                 if (MessageBox.Show("Are you sure you want to cancel this lesson", "Are you sure?",
                     MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
-                    DeleteAssignment();
+                    DeleteLesson();
                     LoadFirstLesson();
                 }
             }
@@ -124,13 +136,13 @@ namespace DrivingSchoolManagementSystem
             catch (Exception ex) when (ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE_TIMES)
             {
                 DisplayError($"Could not complete operation because of the following: \n" +
-                    $"{string.Join(";\n", timesErrorMessages)}", "Could not complete operation");
+                    $"{string.Join("\n", timesErrorMessages)}", "Could not complete operation");
                 return;
             }
             catch (Exception ex) when (ex.Message == BusinessRulesConstants.BR_ERROR_MESSAGE)
             {
                 DisplayError($"Could not complete operation because of the following: \n" +
-                    $"{string.Join(";\n", errorMessages)}", "Could not complete operation");
+                    $"{string.Join("\n", errorMessages)}", "Could not complete operation");
                 return;
             }
             catch (Exception ex) when (ex.Message == "Duplicate rows")
@@ -251,13 +263,25 @@ namespace DrivingSchoolManagementSystem
         {
             string sqlInstructors = "SELECT InstructorID, LastName + ', '+ FirstName AS FullName " +
                "FROM Instructors ORDER BY LastName, FirstName";
-            UIUtilities.Bind(cmbInstructors, "FullName", "InstructorId", DataAccess.GetData(sqlInstructors), addEmptyRow: true, "-- Select an Instructor --");
+
+            DataTable dtInstructors = DataAccess.GetData(sqlInstructors);
+            Invoke(() =>
+            {
+                UIUtilities.Bind(cmbInstructors, "FullName", "InstructorId", dtInstructors, addEmptyRow: true, "-- Select an Instructor --");
+
+            });
         }
 
         private void LoadStudents()
         {
             string sqlStudents = "SELECT StudentID, LastName + ', '+ FirstName AS FullName FROM Students ORDER BY LastName, FirstName";
-            UIUtilities.Bind(cmbStudents, "FullName", "StudentId", DataAccess.GetData(sqlStudents), addEmptyRow: true, "-- Select a Student --");
+            DataTable dtStudents = DataAccess.GetData(sqlStudents);
+
+            Invoke(() =>
+            {
+                UIUtilities.Bind(cmbStudents, "FullName", "StudentId", dtStudents, addEmptyRow: true, "-- Select a Student --");
+
+            });
         }
 
         private void LoadCars()
@@ -268,7 +292,14 @@ namespace DrivingSchoolManagementSystem
 		                                    ' (' + CONVERT(VARCHAR, LicensePlate)
 		                                    + ')' AS CarDescription 
                                     FROM Cars";
-            UIUtilities.Bind(cmbCars, "CarDescription", "CarId", DataAccess.GetData(sqlCars), addEmptyRow: true, "-- Select a Car --");
+            DataTable dtCars = DataAccess.GetData(sqlCars);
+
+            Invoke(() =>
+            {
+                UIUtilities.Bind(cmbCars, "CarDescription", "CarId", dtCars, addEmptyRow: true, "-- Select a Car --");
+
+            });
+
         }
 
         private void LoadFirstLesson()
@@ -472,8 +503,6 @@ namespace DrivingSchoolManagementSystem
                 lessonType = "Theoric";
             }
 
-            if (startTime.CompareTo(endTime) > 0) durationInMinutes = 0;
-
             #endregion
 
 
@@ -485,10 +514,14 @@ namespace DrivingSchoolManagementSystem
 
             if (Validator.ValidateLessonInstructorDateAndTime(instructorId, lessonDate,
                             startTime, endTime, lessonId) &&
-                    Validator.ValidateLessonStudentDate(studentId, lessonDate, lessonId))
+                    Validator.ValidateLessonStudentDate(studentId, lessonDate, lessonId)
+                    && (cmbCars.SelectedIndex > 0 ? Validator
+                            .ValidateLessonCarDateAndTime(carId.Value, lessonDate, startTime, endTime, lessonId)
+                            : true)
+               )
             {
+                int oldDuration = HelperMethods.GetOldDuration(lessonId);
                 string atCarId = "@Car_ID";
-                string atPickupLocation = "@Pickup_Location";
                 string sql = $@"
                     UPDATE Lessons
                      SET
@@ -497,7 +530,7 @@ namespace DrivingSchoolManagementSystem
                         CarID = {(carId == null ? atCarId : carId.Value)},
                         LessonType = '{lessonType}',
                         LessonMinutesDuration = {durationInMinutes},
-                        PickupLocation = {(pickupLocation == string.Empty ? atPickupLocation : FormatToDB(pickupLocation))},
+                        PickupLocation = '{(pickupLocation == string.Empty ? BusinessRulesConstants.DEFAULT_LOCATION : pickupLocation)}',
                         LessonEndTime = '{endTime.ToDBFormatString()}',
                         LessonStartTime = '{startTime.ToDBFormatString()}',
                         LessonDate = '{lessonDate}'
@@ -505,22 +538,16 @@ namespace DrivingSchoolManagementSystem
                     ";
 
                 int rowsAffected;
-                if (carId == null && pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atCarId, atPickupLocation);
-
-                else if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId: atCarId);
-
-                else if (pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atPickupLocation: atPickupLocation);
-
+                if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId);
                 else rowsAffected = DataAccess.SendData(sql);
 
                 if (rowsAffected == 1)
                 {
-                    MessageBox.Show("Lesson was updated.");
-                    int oldDuration = HelperMethods.GetOldDuration(lessonId);
+                    MessageBox.Show("Lesson was updated.");             
                     if (oldDuration != durationInMinutes)
                     {
-                        int durationForFee = oldDuration > durationInMinutes ?
-                                oldDuration - durationInMinutes : durationInMinutes - oldDuration;
+                        int durationForFee = 
+                                durationInMinutes - oldDuration;
                         HelperMethods.UpdateStudentFees(durationForFee, studentId);
                     }
                 }
@@ -533,8 +560,14 @@ namespace DrivingSchoolManagementSystem
             }
             else
             {
-                errorMessages = Validator.GetLessonErrorMessages(
-                                instructorId, studentId, lessonDate, startTime, endTime, lessonId);
+                errorMessages =
+
+                     cmbCars.SelectedIndex <= 0 ? Validator.GetLessonErrorMessages(
+                                 instructorId, studentId, lessonDate, startTime, endTime, lessonId) :
+
+                     Validator.GetLessonErrorMessages(
+                                 instructorId, studentId, lessonDate, startTime, endTime, lessonId: lessonId,
+                                 carId: carId.Value);
 
                 throw new Exception(BusinessRulesConstants.BR_ERROR_MESSAGE);
             }
@@ -588,7 +621,6 @@ namespace DrivingSchoolManagementSystem
             {
                 lessonType = "Theoric";
             }
-            if (startTime.CompareTo(endTime) > 0) durationInMinutes = 0;
 
             #endregion
 
@@ -600,10 +632,12 @@ namespace DrivingSchoolManagementSystem
 
             if (Validator.ValidateLessonInstructorDateAndTime(instructorId, lessonDate,
                             startTime, endTime) &&
-                    Validator.ValidateLessonStudentDate(studentId, lessonDate))
+                    Validator.ValidateLessonStudentDate(studentId, lessonDate)
+                    && ( cmbCars.SelectedIndex > 0 ? Validator
+                            .ValidateLessonCarDateAndTime(carId.Value,lessonDate, startTime, endTime) : true)
+               )
             {
                 string atCarId = "@CarID";
-                string atPickupLocation = "@PickupLocation";
                 string sql = $@"
                             Insert Into Lessons
                             (
@@ -619,19 +653,14 @@ namespace DrivingSchoolManagementSystem
                                 {(carId == null ? atCarId : carId.Value)},
                                 '{lessonType}',
                                 {durationInMinutes},
-                                '{(pickupLocation == string.Empty ? atPickupLocation : pickupLocation)}',
+                                '{(pickupLocation == string.Empty ? BusinessRulesConstants.DEFAULT_LOCATION : pickupLocation)}',
                                 '{endTime.ToDBFormatString()}',
                                 '{startTime.ToDBFormatString()}',
                                 '{lessonDate}'
                             )
                 ";
                 int rowsAffected;
-                if (carId == null && pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atCarId, atPickupLocation);
-
-                else if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId);
-
-                else if (pickupLocation == string.Empty) rowsAffected = DataAccess.SendData(sql, atPickupLocation);
-
+                if (carId == null) rowsAffected = DataAccess.SendData(sql, atCarId);
                 else rowsAffected = DataAccess.SendData(sql);
 
                 if (rowsAffected == 1)
@@ -648,8 +677,14 @@ namespace DrivingSchoolManagementSystem
             }
             else
             {
-                errorMessages = Validator.GetLessonErrorMessages(
-                                instructorId, studentId, lessonDate, startTime, endTime);
+                errorMessages = 
+                    
+                    cmbCars.SelectedIndex <= 0 ? Validator.GetLessonErrorMessages(
+                                instructorId, studentId, lessonDate, startTime, endTime) :
+
+                    Validator.GetLessonErrorMessages(
+                                instructorId, studentId, lessonDate, startTime, endTime, 
+                                carId: carId.Value);
 
                 throw new Exception(BusinessRulesConstants.BR_ERROR_MESSAGE);
 
@@ -657,8 +692,13 @@ namespace DrivingSchoolManagementSystem
 
         }
 
-        private void DeleteAssignment()
+        private void DeleteLesson()
         {
+            string queryDuration = $@"SELECT LessonMinutesDuration FROM Lessons WHERE LessonID = {currentLessonId}";
+            int durationToDeduce = Convert.ToInt32(DataAccess.GetValue(queryDuration));
+            decimal feesToDeduce = HelperMethods.CalculateCharge(durationToDeduce);
+            string queryFees = $@"UPDATE Students SET DueFees = DueFees - {feesToDeduce} WHERE StudentID = {cmbStudents.SelectedValue}";
+
             string sql = $@"
                     DELETE FROM Lessons
                     Where LessonID = {currentLessonId}
@@ -668,6 +708,7 @@ namespace DrivingSchoolManagementSystem
 
             if (rowsAffected == 1)
             {
+                int _ = DataAccess.SendData(queryFees);
                 MessageBox.Show("Lesson was canceled.");
             }
             else
@@ -783,7 +824,7 @@ namespace DrivingSchoolManagementSystem
         }
         public void DisplayStatusRow(string status)
         {
-            this.DisplayParentStatusStripMessage($"{status}...");
+            this.DisplayParentStatusStripMessage($"{status} an entry");
         }
         private void ClearParentStatusStrip() => this.DisplayParentStatusStripMessage(string.Empty);
 
@@ -795,69 +836,74 @@ namespace DrivingSchoolManagementSystem
         {
             string errorMessage = string.Empty;
             TextBox textBox = (TextBox)sender;
+            if (!textBox.ReadOnly || textBox.Enabled)
+            {
 
-            if (sender == txtPickupLocation && txtPickupLocation.Text == string.Empty)
-            {
-                e.Cancel = false;
-                return;
-            }
-            if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
-            {
-                if (!(sender == txtEndTimeMin ||
-                    sender == txtStartTimeMin))
+                if (sender == txtPickupLocation && txtPickupLocation.Text == string.Empty)
                 {
-                    errorMessage = $"{textBox.Tag} is required.";
+                    e.Cancel = false;
+                    return;
+                }
+                if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
+                {
+                    if (!(sender == txtEndTimeMin ||
+                        sender == txtStartTimeMin))
+                    {
+                        errorMessage = $"{textBox.Tag} is required.";
+                        e.Cancel = true;
+                    }
+                }
+
+                if (sender == txtStartTimeHour)
+                {
+                    if (Validator.ValidateHour(txtStartTimeHour.Text) == false)
+                    {
+                        errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
+                        e.Cancel = true;
+                    }
+                }
+                if (sender == txtEndTimeHour)
+                {
+                    if (Validator.ValidateHour(txtEndTimeHour.Text) == false)
+                    {
+                        errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
+                        e.Cancel = true;
+                    }
+                }
+
+                if (sender == txtEndTimeMin || sender == txtStartTimeMin)
+                {
+                    if (txtStartTimeMin.Text == string.Empty)
+                    {
+                        txtStartTimeMin.Text = "00";
+                    }
+                    if (txtEndTimeMin.Text == string.Empty)
+                    {
+                        txtEndTimeMin.Text = "00";
+                    }
+
+                    if (!Validator.ValidateMinute(txtStartTimeMin.Text) ||
+                        !Validator.ValidateMinute(txtEndTimeMin.Text))
+                    {
+                        errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'MM'.";
+                        e.Cancel = true;
+                    }
+                }
+
+                if (sender == txtPickupLocation &&
+                    !Validator.ValidateAddress(txtPickupLocation.Text))
+                {
+                    if (txtPickupLocation.Text == BusinessRulesConstants.DEFAULT_LOCATION)
+                    {
+                        e.Cancel = false;
+                        return;
+                    }
+                    errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
+                        $" (Appt No. is optional) - city and province can be added";
                     e.Cancel = true;
                 }
+                errorProvider1.SetError(textBox, errorMessage); 
             }
-
-            if (sender == txtStartTimeHour)
-            {
-                if (Validator.ValidateHour(txtStartTimeHour.Text) == false)
-                {
-                    errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
-                    e.Cancel = true;
-                }
-            }
-            if (sender == txtEndTimeHour)
-            {
-                if (Validator.ValidateHour(txtEndTimeHour.Text) == false)
-                {
-                    errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'HH'.";
-                    e.Cancel = true;
-                }
-            }
-
-            if (sender == txtEndTimeMin || sender == txtStartTimeMin)
-            {
-                if (txtStartTimeMin.Text == string.Empty)
-                {
-                    txtStartTimeMin.Text = "00";
-                }
-                if (txtEndTimeMin.Text == string.Empty)
-                {
-                    txtEndTimeMin.Text = "00";
-                }
-
-                if (!Validator.ValidateMinute(txtStartTimeMin.Text) ||
-                    !Validator.ValidateMinute(txtEndTimeMin.Text))
-                {
-                    errorMessage = $"{textBox.Tag} is not in correct format, must be of format 'MM'.";
-                    e.Cancel = true;
-                }
-            }
-
-            if (sender == txtPickupLocation &&
-                !Validator.ValidateAddress(txtPickupLocation.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
-                    $" (Appt No. is optional) - city and province can be added";
-                e.Cancel = true;
-            }
-
-
-
-            errorProvider1.SetError(textBox, errorMessage);
         }
 
         private void Cmb_Validation(object sender, CancelEventArgs e)
@@ -865,29 +911,35 @@ namespace DrivingSchoolManagementSystem
             string errorMessage = string.Empty;
             ComboBox comboBox = (ComboBox)sender;
 
-            if (comboBox.SelectedIndex <= 0)   // will change this
+            if (comboBox.Enabled)
             {
-                if (sender == cmbCars && comboBox.SelectedIndex == 0)
+                if (comboBox.SelectedIndex <= 0)   // will change this
                 {
-                    return;
+                    if (sender == cmbCars && comboBox.SelectedIndex == 0)
+                    {
+                        return;
+                    }
+                    errorMessage = $"{comboBox.Tag} cannot be empty, please select a value";
+                    e.Cancel = true;
                 }
-                errorMessage = $"{comboBox.Tag} cannot be empty, please select a value";
-                e.Cancel = true;
+                errorProvider1.SetError(comboBox, errorMessage); 
             }
-            errorProvider1.SetError(comboBox, errorMessage);
         }
 
         private void Dte_Validating(object sender, CancelEventArgs e)
         {
             string errorMessage = string.Empty;
             DateTimePicker dateTime = (DateTimePicker)sender;
-            if (!Validator.ValidateLessonDate(dteLessonDate.Value))
+            if (dateTime.Enabled)
             {
-                errorMessage = $"{dateTime.Tag} is not valid, cannot be less than actual date or " +
-                    $"more than {BusinessRulesConstants.MAX_LESSON_BOOKING_NUM_YEARS_SPAN} years from now.";
-                e.Cancel = true;
+                if (false)
+                {
+                    errorMessage = $"{dateTime.Tag} is not valid, cannot be less than actual date or " +
+                        $"more than {BusinessRulesConstants.MAX_LESSON_BOOKING_NUM_YEARS_SPAN} years from now.";
+                    e.Cancel = true;
+                }
+                errorProvider1.SetError(dateTime, errorMessage); 
             }
-            errorProvider1.SetError(dateTime, errorMessage);
         }
 
         #endregion

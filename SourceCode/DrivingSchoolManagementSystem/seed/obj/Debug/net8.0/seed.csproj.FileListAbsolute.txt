@@ -1,0 +1,15 @@
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\bin\Debug\net8.0\seed.exe
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\bin\Debug\net8.0\seed.deps.json
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\bin\Debug\net8.0\seed.runtimeconfig.json
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\bin\Debug\net8.0\seed.dll
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\bin\Debug\net8.0\seed.pdb
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.GeneratedMSBuildEditorConfig.editorconfig
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.AssemblyInfoInputs.cache
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.AssemblyInfo.cs
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.csproj.CoreCompileInputs.cache
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.sourcelink.json
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.dll
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\refint\seed.dll
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.pdb
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\seed.genruntimeconfig.cache
+C:\src\Database Programming\Project\Driving_School_Management_System_Project\SourceCode\DrivingSchoolManagementSystem\seed\obj\Debug\net8.0\ref\seed.dll

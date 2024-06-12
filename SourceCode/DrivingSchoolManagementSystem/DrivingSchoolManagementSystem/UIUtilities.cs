@@ -91,6 +91,15 @@ namespace DrivingSchoolManagementSystem
                 }
             }
         }
+
+        public static void StartParentProgressBar(this Form form, string startMessage, string endMessage)
+        {
+            frmMDIParent? parentMdi = form.MdiParent as frmMDIParent;
+            if (parentMdi != null)
+            {
+                parentMdi.StartProgressBar(startMessage, endMessage);
+            }
+        }
     }
     
 }

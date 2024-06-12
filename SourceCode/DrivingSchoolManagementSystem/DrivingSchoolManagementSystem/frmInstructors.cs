@@ -136,7 +136,7 @@ namespace DrivingSchoolManagementSystem
                         if (currentState == FormState.Add)
                         {
                             //add
-                            CreateInstructor();      
+                            CreateInstructor();
                         }
                         else
                         {
@@ -222,7 +222,7 @@ namespace DrivingSchoolManagementSystem
                 {
                     DisplayStatusRow("Adding");
                     grpInstructors.ClearChildControls(-1);
-                }    
+                }
                 DisableNavigation();
             }
         }
@@ -359,15 +359,15 @@ namespace DrivingSchoolManagementSystem
                 return;
             }
             string sqlUpdateInstructor = $@"UPDATE Instructors
-                        SET FirstName = '{txtFirstName.Text.Trim()}', 
-                            LastName = '{txtLastName.Text.Trim()}', 
+                        SET FirstName = '{DataAccess.SQLFix(txtFirstName.Text.Trim())}', 
+                            LastName = '{DataAccess.SQLFix(txtLastName.Text.Trim())}', 
                             DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}', 
                             HiredDate = '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}', 
                             PhoneNumber = '{txtPhone.Text}', 
                             Email = '{txtEmail.Text}', 
                             LicenceNumber = {txtLicenceNumber.Text}, 
                             Age = {age}, 
-                            Address = '{txtAddress.Text}'
+                            Address = '{DataAccess.SQLFix(txtAddress.Text)}'
                         WHERE InstructorID = {txtId.Text}";
 
 
@@ -404,15 +404,15 @@ namespace DrivingSchoolManagementSystem
                             Address
                             )
                         VALUES (
-                                '{txtFirstName.Text.Trim()}',
-                                '{txtLastName.Text.Trim()}',
+                                '{DataAccess.SQLFix(txtFirstName.Text.Trim())}',
+                                '{DataAccess.SQLFix(txtLastName.Text.Trim())}',
                                 '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
                                 '{dteHired.Value.Year}-{dteHired.Value.Month}-{dteHired.Value.Day}',
                                 '{txtPhone.Text}',
                                 '{txtEmail.Text}',
                                 {txtLicenceNumber.Text},
                                 {age},
-                                '{txtAddress.Text}'
+                                '{DataAccess.SQLFix(txtAddress.Text)}'
                                 )";
             int rowsAffected = DataAccess.SendData(sqlInsertInstructors);
 
@@ -491,7 +491,7 @@ namespace DrivingSchoolManagementSystem
         #region ToolStrip Methods
         public void DisplayCurrentPositionOnStripLabel(int rowNumber, int totalRowCount)
         {
-            this.DisplayParentStatusStripMessage($"{rowNumber} of {totalRowCount} records.") ;
+            this.DisplayParentStatusStripMessage($"{rowNumber} of {totalRowCount} records.");
         }
         public void DisplayStatusRow(string status)
         {
@@ -506,41 +506,44 @@ namespace DrivingSchoolManagementSystem
         {
             string errorMessage = string.Empty;
             TextBox textBox = (TextBox)sender;
-            if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
+            if (!textBox.ReadOnly || textBox.Enabled)
             {
-                errorMessage = $"{textBox.Tag} is required.";
-                e.Cancel = true;
-            }
+                if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is required.";
+                    e.Cancel = true;
+                }
 
-            if ((sender == txtFirstName || sender == txtLastName) && !Validator.ValidateName(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid (a valid name must start with an uppercase letter and can only contain" +
-                    $" letters, spaces, hyphens, and apostrophes).";
-                e.Cancel = true;
+                if ((sender == txtFirstName || sender == txtLastName) && !Validator.ValidateName(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (a valid name must start with an uppercase letter and can only contain" +
+                        $" letters, spaces, hyphens, and apostrophes).";
+                    e.Cancel = true;
+                }
+                if (sender == txtPhone && !Validator.ValidatePhoneNumber(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (must be a 10 digit number without special characters or spaces, " +
+                        $"must start with area code in {BusinessRulesConstants.COUNTRY}).";
+                    e.Cancel = true;
+                }
+                if (sender == txtEmail && !Validator.ValidateEmail(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid email, please retry.";
+                    e.Cancel = true;
+                }
+                if (sender == txtLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (must be a 8 digit number without special characters or spaces).";
+                    e.Cancel = true;
+                }
+                if (sender == txtAddress && !Validator.ValidateAddress(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
+                        $" (Appt No. is optional) - city and province can be added";
+                    e.Cancel = true;
+                }
+                errorProvider1.SetError(textBox, errorMessage); 
             }
-            if (sender == txtPhone && !Validator.ValidatePhoneNumber(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid (must be a 10 digit number without special characters or spaces, " +
-                    $"must start with area code in {BusinessRulesConstants.COUNTRY}).";
-                e.Cancel = true;
-            }
-            if (sender == txtEmail && !Validator.ValidateEmail(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid email, please retry.";
-                e.Cancel = true;
-            }
-            if (sender == txtLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid (must be a 8 digit number without special characters or spaces).";
-                e.Cancel = true;
-            }
-            if (sender == txtAddress && !Validator.ValidateAddress(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
-                    $" (Appt No. is optional) - city and province can be added";
-                e.Cancel = true;
-            }
-            errorProvider1.SetError(textBox, errorMessage);
         }
 
         private void dte_Validating(object sender, CancelEventArgs e)
@@ -563,8 +566,8 @@ namespace DrivingSchoolManagementSystem
                         $"{BusinessRulesConstants.MINIMUM_INSTRUCTOR_AGE} and {BusinessRulesConstants.MAXIMUM_INSTRUCTOR_AGE}" +
                         $" years of age.";
                     e.Cancel = true;
-                } 
-                
+                }
+
             }
             errorProvider1.SetError(dateTime, errorMessage);
         }
@@ -576,7 +579,12 @@ namespace DrivingSchoolManagementSystem
             MessageBox.Show(ex.Message, ex.GetType().ToString());
         }
 
-        
+
         #endregion
+
+        private void txtFirstName_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

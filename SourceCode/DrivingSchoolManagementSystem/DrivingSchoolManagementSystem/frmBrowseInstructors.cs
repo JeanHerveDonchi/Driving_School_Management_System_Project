@@ -78,8 +78,8 @@ namespace DrivingSchoolManagementSystem
                     dgvInstructors.Columns[1].HeaderText = "Student No";
                     dgvInstructors.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dgvInstructors.Columns[2].HeaderText = "Lesson Date";
-                    dgvInstructors.Columns[3].HeaderText = "Order Starts At";
-                    dgvInstructors.Columns[4].HeaderText = "Order Ends At";
+                    dgvInstructors.Columns[3].HeaderText = "Lesson Starts At";
+                    dgvInstructors.Columns[4].HeaderText = "Lesson Ends At";
                     dgvInstructors.Columns[5].HeaderText = "Pickup Location";
                     dgvInstructors.Columns[6].HeaderText = "Lesson Type";
                     dgvInstructors.Columns[7].HeaderText = "Car";

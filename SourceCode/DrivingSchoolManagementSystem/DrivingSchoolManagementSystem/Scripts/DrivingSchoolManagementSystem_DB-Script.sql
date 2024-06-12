@@ -93,11 +93,26 @@ ALTER TABLE students
 ADD LearnersLicenceNumber BIGINT NULL;
 GO
 
+USE DrivingSchoolDB;
+GO
 -- Create a filtered unique index to allow multiple NULL values but enforce uniqueness on non-NULL values
 CREATE UNIQUE INDEX IX_Unique_LearnersLicenceNumber
 ON students (LearnersLicenceNumber)
 WHERE LearnersLicenceNumber IS NOT NULL;
 GO
+
+ALTER TABLE Lessons
+ADD LessonType VARCHAR(255) NOT NULL DEFAULT 'Theoric';
+
+ALTER TABLE Lessons
+ALTER COLUMN PickupLocation VARCHAR(255) NULL;
+
+USE DrivingSchoolDB;
+GO
+
+-- Modify the CarId column to be nullable
+ALTER TABLE Lessons
+ALTER COLUMN CarId INT NULL;
 
 
 USE DrivingSchoolDB;
@@ -123,53 +138,51 @@ INSERT INTO Login (Username, PasswordHash) VALUES
 ('hervedonchi01', 'simplepass2');
 GO
 
-ALTER TABLE Lessons
-ADD LessonType VARCHAR(255) NOT NULL DEFAULT 'Theoric';
 
-ALTER TABLE Lessons
-ALTER COLUMN PickupLocation VARCHAR(255) NULL;
-
-USE DrivingSchoolDB;
-GO
-
--- Modify the CarId column to be nullable
-ALTER TABLE Lessons
-ALTER COLUMN CarId INT NULL;
 
 -- Insert students with some having learners licence numbers and some being NULL
-INSERT INTO students (FirstName, LastName, DateOfBirth, HasLearnersLicence, AdmissionDate, PhoneNumber, Email, LearnersLicenceNumber, age, address, Duefees)
-VALUES 
-('John', 'Smith', '2006-08-15', 1, '2024-01-10', '5061234567', 'john.smith@example.com', 9876543210, 18, '123 Maple St, Moncton, NB', 0.00),
+INSERT INTO Students (FirstName, LastName, DateOfBirth, HasLearnersLicence, AdmissionDate, PhoneNumber, Email, LearnersLicenceNumber, Age, Address, Duefees)
+VALUES
+('Alexander', 'Green', '2004-02-15', 1, '2020-01-10', '5061234560', 'alexander.green@example.com', 100000001, 20, '123 Cedar St, Moncton, NB', 0),
+('Emma', 'White', '2005-03-25', 0, '2021-02-14', '5062345671', 'emma.white@example.com', NULL, 19, '456 Birch St, Moncton, NB', 0),
+('Benjamin', 'Clark', '2003-06-10', 1, '2019-05-22', '5063456782', 'benjamin.clark@example.com', 100000002, 21, '789 Elm St, Moncton, NB', 0),
+('Olivia', 'Hall', '2004-09-05', 1, '2020-08-30', '5064567893', 'olivia.hall@example.com', 100000003, 20, '321 Oak St, Moncton, NB', 0),
+('Lucas', 'Allen', '2002-11-20', 0, '2018-10-12', '5065678904', 'lucas.allen@example.com', NULL, 21, '654 Pine St, Moncton, NB', 0),
+('Sophia', 'Young', '2005-01-30', 1, '2021-12-15', '5066789015', 'sophia.young@example.com', 100000004, 19, '987 Maple St, Moncton, NB', 0),
+('Mason', 'King', '2004-04-17', 0, '2020-03-20', '5067890126', 'mason.king@example.com', NULL, 20, '135 Spruce St, Moncton, NB', 0),
+('Isabella', 'Wright', '2003-07-12', 1, '2019-06-25', '5068901237', 'isabella.wright@example.com', 100000005, 21, '246 Walnut St, Moncton, NB', 0),
+('Liam', 'Scott', '2002-10-02', 1, '2018-09-28', '5069012348', 'liam.scott@example.com', 100000006, 21, '357 Hickory St, Moncton, NB', 0),
+('Ava', 'Adams', '2003-12-23', 1, '2019-11-18', '5060123459', 'ava.adams@example.com', 100000007, 21, '468 Redwood St, Moncton, NB', 0),
+('Ethan', 'Baker', '2004-03-08', 0, '2020-02-14', '5062345670', 'ethan.baker@example.com', NULL, 20, '579 Cedar St, Moncton, NB', 0),
+('Mia', 'Mitchell', '2005-06-01', 1, '2021-05-05', '5063456781', 'mia.mitchell@example.com', 100000008, 19, '680 Birch St, Moncton, NB', 0),
+('James', 'Carter', '2002-09-15', 0, '2018-08-22', '5064567892', 'james.carter@example.com', NULL, 21, '123 Maple St, Moncton, NB', 0),
+('Amelia', 'Parker', '2004-12-04', 1, '2020-11-10', '5065678903', 'amelia.parker@example.com', 100000009, 20, '456 Oak St, Moncton, NB', 0),
+('Aiden', 'Evans', '2003-02-28', 1, '2019-01-20', '5066789014', 'aiden.evans@example.com', 100000010, 21, '789 Pine St, Moncton, NB', 0),
+('Charlotte', 'Edwards', '2005-08-09', 0, '2021-07-30', '5067890125', 'charlotte.edwards@example.com', NULL, 19, '321 Spruce St, Moncton, NB', 0),
+('Matthew', 'Collins', '2004-11-01', 1, '2020-10-05', '5068901236', 'matthew.collins@example.com', 100000011, 20, '654 Walnut St, Moncton, NB', 0),
+('Abigail', 'Reed', '2003-05-14', 0, '2019-04-18', '5069012347', 'abigail.reed@example.com', NULL, 21, '987 Hickory St, Moncton, NB', 0),
+('Jackson', 'Stewart', '2002-07-25', 1, '2018-06-29', '5060123458', 'jackson.stewart@example.com', 100000012, 21, '135 Redwood St, Moncton, NB', 0),
+('Emily', 'Morris', '2004-01-16', 1, '2020-12-12', '5062345679', 'emily.morris@example.com', 100000013, 20, '246 Cedar St, Moncton, NB', 0);
 
-('Jane', 'Doe', '2005-12-05', 0, '2024-01-15', '5062345678', 'jane.doe@example.com', NULL, 19, '456 Oak St, Moncton, NB', 0.00),
-
-('Emily', 'Johnson', '2004-11-22', 1, '2024-02-10', '5063456789', 'emily.johnson@example.com', 8765432109, 20, '789 Pine St, Moncton, NB', 0.00),
-
-('Michael', 'Brown', '2003-10-10', 0, '2024-03-01', '5064567890', 'michael.brown@example.com', NULL, 21, '1010 Birch St, Moncton, NB', 0.00),
-
-('Sarah', 'Davis', '2006-07-07', 1, '2024-03-15', '5065678901', 'sarah.davis@example.com', 7654321098, 17, '1111 Cedar St, Moncton, NB', 0.00),
-
-('David', 'Miller', '2005-05-30', 0, '2024-04-10', '5066789012', 'david.miller@example.com', NULL, 18, '1212 Spruce St, Moncton, NB', 0.00),
-
-('William', 'Davies', '2003-03-25', 1, '2024-04-25', '5067890123', 'william.davies@example.com', 6543210987, 21, '1313 Fir St, Moncton, NB', 0.00);
 
 
 -- Insert into Instructors table
-INSERT INTO Instructors (FirstName, LastName, DateOfBirth, HiredDate, PhoneNumber, Email, LicenceNumber, Age, Address) VALUES
-('Sarah', 'Taylor', '1980-03-10', '2015-05-01', '5066661234', 'sarah.taylor@example.com', 12345679, 42, '789 Maple Ave, Moncton, NB'),
-('David', 'Anderson', '1975-08-15', '2016-06-01', '5066662345', 'david.anderson@example.com', 23456789, 47, '456 Elm St, Moncton, NB'),
-('Jennifer', 'Thomas', '1982-11-20', '2017-07-01', '5066663456', 'jennifer.thomas@example.com', 34567890, 39, '123 Oak St, Moncton, NB'),
-('James', 'Clark', '1978-04-25', '2018-08-01', '5066664567', 'james.clark@example.com', 45678901, 44, '987 Pine St, Moncton, NB'),
-('Jessica', 'White', '1985-06-30', '2019-09-01', '5066665678', 'jessica.white@example.com', 56789012, 39, '654 Birch St, Moncton, NB'),
-('Daniel', 'Harris', '1972-09-05', '2020-10-01', '5066666789', 'daniel.harris@example.com', 67890123, 49, '321 Cedar St, Moncton, NB'),
-('Michelle', 'Martin', '1970-12-10', '2021-11-01', '5066667890', 'michelle.martin@example.com', 78901234, 51, '987 Maple Ave, Moncton, NB'),
-('Christopher', 'Lee', '1968-02-15', '2022-12-01', '5066668901', 'christopher.lee@example.com', 89012345, 54, '456 Elm St, Moncton, NB'),
-('Amanda', 'Garcia', '1973-05-20', '2015-01-01', '5067771234', 'amanda.garcia@example.com', 90123456, 48, '123 Oak St, Moncton, NB'),
-('Robert', 'Martinez', '1976-08-25', '2016-02-01', '5067772345', 'robert.martinez@example.com', 12345678, 45, '789 Pine St, Moncton, NB'),
-('Ashley', 'Hernandez', '1981-11-30', '2017-03-01', '5067773456', 'ashley.hernandez@example.com', 23456779, 40, '456 Maple Ave, Moncton, NB'),
-('Matthew', 'Lopez', '1977-04-05', '2018-04-01', '5067774567', 'matthew.lopez@example.com', 34567892, 45, '789 Cedar St, Moncton, NB'),
-('Brittany', 'Gonzalez', '1984-06-10', '2019-05-01', '5067775678', 'brittany.gonzalez@example.com', 45679901, 38, '321 Elm St, Moncton, NB'),
-('Jonathan', 'Perez', '1971-09-15', '2020-06-01', '5067776789', 'jonathan.perez@example.com', 56789912, 51, '987 Maple Ave, Moncton, NB');
-GO
+INSERT INTO Instructors (FirstName, LastName, DateOfBirth, HiredDate, PhoneNumber, Email, LicenceNumber, Age, Address)
+VALUES
+('John', 'Doe', '1980-04-23', '2019-05-20', '5061234567', 'johndoe@example.com', 123456789, 44, '123 Main St, Moncton, NB'),
+('Jane', 'Smith', '1975-09-15', '2018-07-18', '5062345608', 'janesmith@example.com', 234567890, 48, '456 Elm St, Moncton, NB'),
+('Michael', 'Johnson', '1982-01-10', '2020-03-15', '5063456780', 'michaeljohnson@example.com', 345678901, 42, '789 Maple St, Moncton, NB'),
+('Emily', 'Davis', '1978-06-30', '2017-11-25', '5064567890', 'emilydavis@example.com', 456789012, 46, '321 Oak St, Moncton, NB'),
+('William', 'Brown', '1985-03-05', '2019-02-20', '5065678901', 'williambrown@example.com', 567890123, 39, '654 Pine St, Moncton, NB'),
+('Jessica', 'Williams', '1990-12-12', '2021-09-01', '5066789012', 'jessicawilliams@example.com', 678901234, 33, '987 Cedar St, Moncton, NB'),
+('David', 'Miller', '1988-08-18', '2022-01-10', '5067890123', 'davidmiller@example.com', 789012345, 35, '135 Spruce St, Moncton, NB'),
+('Sarah', 'Wilson', '1983-11-03', '2018-04-30', '5068901234', 'sarahwilson@example.com', 890123456, 40, '246 Birch St, Moncton, NB'),
+('James', 'Moore', '1979-07-27', '2019-07-14', '5069012345', 'jamesmoore@example.com', 901234567, 44, '357 Redwood St, Moncton, NB'),
+('Laura', 'Taylor', '1987-02-17', '2020-06-25', '5060123456', 'laurataylor@example.com', 123123123, 37, '468 Ash St, Moncton, NB'),
+('Daniel', 'Anderson', '1981-05-11', '2021-08-05', '5062345678', 'danielanderson@example.com', 234234234, 43, '579 Walnut St, Moncton, NB'),
+('Sophia', 'Thomas', '1992-10-25', '2019-11-20', '5063456789', 'sophiathomas@example.com', 345345345, 31, '680 Hickory St, Moncton, NB');
+
+
+
 
 

@@ -38,6 +38,12 @@ namespace DrivingSchoolManagementSystem
                 case "browseinstructors":
                     childForm = new frmBrowseInstructors();
                     break;
+                case "browsestudents":
+                    childForm = new frmBrowseStudents();
+                    break;
+                case "about":
+                    childForm = new About();
+                    break;
             }
             if (childForm != null)
             {
@@ -55,43 +61,9 @@ namespace DrivingSchoolManagementSystem
             }
         }
 
-        private void OpenFile(object sender, EventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            openFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string FileName = openFileDialog.FileName;
-            }
-        }
-
-        private void SaveAsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Personal);
-            saveFileDialog.Filter = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*";
-            if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-            {
-                string FileName = saveFileDialog.FileName;
-            }
-        }
-
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -163,6 +135,22 @@ namespace DrivingSchoolManagementSystem
         {
             this.tlstrpStatus.Text = message;
             this.tlstrpStatus.ForeColor = color;
+        }
+
+        public void StartProgressBar(string startMessage, string endMessage)
+        {
+            toolStripProgressLabel.Text = startMessage;
+            prgBar.Value = 0;
+            this.statusStrip.Refresh();
+
+            while (prgBar.Value < prgBar.Maximum)
+            {
+                Thread.Sleep(2);
+                prgBar.Value += 1;
+            }
+            prgBar.Value = 100;
+
+            toolStripProgressLabel.Text = endMessage;
         }
     }
 }

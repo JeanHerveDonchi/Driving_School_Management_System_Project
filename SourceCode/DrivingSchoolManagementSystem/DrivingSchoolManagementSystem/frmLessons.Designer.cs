@@ -81,7 +81,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(368, 20);
+            label1.Location = new Point(368, 11);
             label1.Name = "label1";
             label1.Size = new Size(96, 32);
             label1.TabIndex = 0;
@@ -106,9 +106,9 @@
             grpLessons.Controls.Add(txtId);
             grpLessons.Controls.Add(label2);
             grpLessons.Controls.Add(grpStartTime);
-            grpLessons.Location = new Point(109, 55);
+            grpLessons.Location = new Point(109, 46);
             grpLessons.Name = "grpLessons";
-            grpLessons.Size = new Size(620, 672);
+            grpLessons.Size = new Size(620, 510);
             grpLessons.TabIndex = 1;
             grpLessons.TabStop = false;
             grpLessons.Text = "Lesson Details";
@@ -117,7 +117,7 @@
             // 
             grpLessonType.Controls.Add(rdoPractical);
             grpLessonType.Controls.Add(rdoTheoric);
-            grpLessonType.Location = new Point(43, 510);
+            grpLessonType.Location = new Point(45, 364);
             grpLessonType.Name = "grpLessonType";
             grpLessonType.Size = new Size(534, 60);
             grpLessonType.TabIndex = 39;
@@ -148,16 +148,16 @@
             // cmbCars
             // 
             cmbCars.FormattingEnabled = true;
-            cmbCars.Location = new Point(43, 216);
+            cmbCars.Location = new Point(128, 154);
             cmbCars.Name = "cmbCars";
-            cmbCars.Size = new Size(537, 23);
+            cmbCars.Size = new Size(452, 23);
             cmbCars.TabIndex = 38;
             cmbCars.Validating += Cmb_Validation;
             // 
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(43, 198);
+            label8.Location = new Point(45, 157);
             label8.Name = "label8";
             label8.Size = new Size(28, 15);
             label8.TabIndex = 37;
@@ -166,16 +166,16 @@
             // cmbInstructors
             // 
             cmbInstructors.FormattingEnabled = true;
-            cmbInstructors.Location = new Point(43, 162);
+            cmbInstructors.Location = new Point(128, 108);
             cmbInstructors.Name = "cmbInstructors";
-            cmbInstructors.Size = new Size(537, 23);
+            cmbInstructors.Size = new Size(452, 23);
             cmbInstructors.TabIndex = 36;
             cmbInstructors.Validating += Cmb_Validation;
             // 
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(43, 144);
+            label7.Location = new Point(43, 111);
             label7.Name = "label7";
             label7.Size = new Size(61, 15);
             label7.TabIndex = 35;
@@ -184,16 +184,16 @@
             // cmbStudents
             // 
             cmbStudents.FormattingEnabled = true;
-            cmbStudents.Location = new Point(43, 109);
+            cmbStudents.Location = new Point(128, 66);
             cmbStudents.Name = "cmbStudents";
-            cmbStudents.Size = new Size(537, 23);
+            cmbStudents.Size = new Size(452, 23);
             cmbStudents.TabIndex = 34;
             cmbStudents.Validating += Cmb_Validation;
             // 
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(43, 90);
+            label6.Location = new Point(43, 69);
             label6.Name = "label6";
             label6.Size = new Size(51, 15);
             label6.TabIndex = 33;
@@ -206,9 +206,9 @@
             grpEndTime.Controls.Add(label4);
             grpEndTime.Controls.Add(txtEndTimeMin);
             grpEndTime.Controls.Add(txtEndTimeHour);
-            grpEndTime.Location = new Point(43, 375);
+            grpEndTime.Location = new Point(305, 243);
             grpEndTime.Name = "grpEndTime";
-            grpEndTime.Size = new Size(537, 59);
+            grpEndTime.Size = new Size(275, 59);
             grpEndTime.TabIndex = 32;
             grpEndTime.TabStop = false;
             grpEndTime.Text = "Lesson End Time";
@@ -262,16 +262,16 @@
             // 
             // txtDuration
             // 
-            txtDuration.Location = new Point(43, 467);
+            txtDuration.Location = new Point(128, 321);
             txtDuration.Name = "txtDuration";
             txtDuration.ReadOnly = true;
-            txtDuration.Size = new Size(534, 23);
+            txtDuration.Size = new Size(452, 23);
             txtDuration.TabIndex = 21;
             // 
             // Age
             // 
             Age.AutoSize = true;
-            Age.Location = new Point(46, 449);
+            Age.Location = new Point(48, 324);
             Age.Name = "Age";
             Age.Size = new Size(56, 15);
             Age.TabIndex = 20;
@@ -279,10 +279,10 @@
             // 
             // txtPickupLocation
             // 
-            txtPickupLocation.Location = new Point(43, 611);
+            txtPickupLocation.Location = new Point(46, 463);
             txtPickupLocation.Name = "txtPickupLocation";
             txtPickupLocation.PlaceholderText = "St Number. St Name. (Appt No)";
-            txtPickupLocation.Size = new Size(537, 23);
+            txtPickupLocation.Size = new Size(533, 23);
             txtPickupLocation.TabIndex = 19;
             txtPickupLocation.Tag = "Address";
             txtPickupLocation.Validating += Txt_Validating;
@@ -290,7 +290,7 @@
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(46, 593);
+            label11.Location = new Point(45, 440);
             label11.Name = "label11";
             label11.Size = new Size(95, 15);
             label11.TabIndex = 18;
@@ -298,7 +298,7 @@
             // 
             // dteLessonDate
             // 
-            dteLessonDate.Location = new Point(43, 276);
+            dteLessonDate.Location = new Point(128, 198);
             dteLessonDate.MaxDate = new DateTime(2146, 12, 31, 0, 0, 0, 0);
             dteLessonDate.MinDate = new DateTime(1964, 1, 1, 0, 0, 0, 0);
             dteLessonDate.Name = "dteLessonDate";
@@ -311,7 +311,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(43, 256);
+            label5.Location = new Point(43, 204);
             label5.Name = "label5";
             label5.Size = new Size(73, 15);
             label5.TabIndex = 6;
@@ -319,10 +319,10 @@
             // 
             // txtId
             // 
-            txtId.Location = new Point(43, 51);
+            txtId.Location = new Point(128, 25);
             txtId.Name = "txtId";
             txtId.ReadOnly = true;
-            txtId.Size = new Size(537, 23);
+            txtId.Size = new Size(451, 23);
             txtId.TabIndex = 1;
             // 
             // label2
@@ -341,9 +341,9 @@
             grpStartTime.Controls.Add(label3);
             grpStartTime.Controls.Add(txtStartTimeMin);
             grpStartTime.Controls.Add(txtStartTimeHour);
-            grpStartTime.Location = new Point(43, 310);
+            grpStartTime.Location = new Point(46, 243);
             grpStartTime.Name = "grpStartTime";
-            grpStartTime.Size = new Size(537, 59);
+            grpStartTime.Size = new Size(233, 59);
             grpStartTime.TabIndex = 30;
             grpStartTime.TabStop = false;
             grpStartTime.Text = "Lesson Start Time";
@@ -397,57 +397,72 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(136, 748);
+            btnAdd.BackColor = Color.ForestGreen;
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.ForeColor = SystemColors.ButtonHighlight;
+            btnAdd.Location = new Point(138, 574);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(75, 33);
             btnAdd.TabIndex = 2;
             btnAdd.Text = "Add";
-            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.UseVisualStyleBackColor = false;
             btnAdd.Click += btnAdd_Click;
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(261, 749);
+            btnDelete.BackColor = Color.OrangeRed;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.ForeColor = SystemColors.ButtonHighlight;
+            btnDelete.Location = new Point(263, 575);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(75, 33);
             btnDelete.TabIndex = 3;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(383, 749);
+            btnSave.BackColor = Color.Orange;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.ForeColor = SystemColors.ButtonHighlight;
+            btnSave.Location = new Point(385, 575);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 32);
             btnSave.TabIndex = 4;
             btnSave.Text = "Update";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(629, 750);
+            btnExit.BackColor = Color.LightSeaGreen;
+            btnExit.FlatStyle = FlatStyle.Flat;
+            btnExit.ForeColor = SystemColors.ButtonHighlight;
+            btnExit.Location = new Point(631, 576);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(75, 32);
             btnExit.TabIndex = 5;
             btnExit.Text = "Exit";
-            btnExit.UseVisualStyleBackColor = true;
+            btnExit.UseVisualStyleBackColor = false;
             btnExit.Click += btnExit_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(503, 750);
+            btnCancel.BackColor = Color.DarkCyan;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.ForeColor = SystemColors.ButtonHighlight;
+            btnCancel.Location = new Point(505, 576);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 32);
             btnCancel.TabIndex = 6;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnFirst
             // 
-            btnFirst.Location = new Point(275, 812);
+            btnFirst.Location = new Point(277, 638);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(41, 32);
             btnFirst.TabIndex = 7;
@@ -457,7 +472,7 @@
             // 
             // btnPrevious
             // 
-            btnPrevious.Location = new Point(347, 812);
+            btnPrevious.Location = new Point(349, 638);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.Size = new Size(41, 32);
             btnPrevious.TabIndex = 8;
@@ -467,7 +482,7 @@
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(426, 812);
+            btnNext.Location = new Point(428, 638);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(41, 32);
             btnNext.TabIndex = 9;
@@ -477,7 +492,7 @@
             // 
             // btnLast
             // 
-            btnLast.Location = new Point(503, 812);
+            btnLast.Location = new Point(505, 638);
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(41, 32);
             btnLast.TabIndex = 10;
@@ -493,7 +508,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(845, 863);
+            BackColor = Color.Linen;
+            ClientSize = new Size(845, 696);
             Controls.Add(btnLast);
             Controls.Add(btnNext);
             Controls.Add(btnPrevious);

@@ -26,27 +26,46 @@ namespace DrivingSchoolManagementSystem
 
         public string ToDBFormatString()
         {
-            return $"{Hour:D2}:{Minute:D2}:00";
+            return $"{this.To24HourFormat():D2}:{Minute:D2}:00";
         }
 
+        public int To24HourFormat()
+        {
+            int hour24 = (Hour == 12 && AmPm == "PM")? 12 : Hour % 12;
+            if (AmPm == "PM" && Hour != 12)
+            {
+                hour24 += 12;
+            }
+            if (AmPm == "AM" && Hour == 12)
+            {
+                hour24 = 0;
+            }
+            return hour24;
+        }
         public int CompareTo(Time other)
         {
-            // Compare AM/PM first
-            if (this.AmPm != other.AmPm)
-            {
-                return this.AmPm.CompareTo(other.AmPm);
-            }
+            // Convert the current time to 24-hour format
+            int thisHour24 = (this.Hour == 12 && this.AmPm == "PM") ? 12 : this.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
+            if (this.AmPm == "PM" && this.Hour != 12) thisHour24 += 12;
+            if (this.AmPm == "AM" && this.Hour == 12) thisHour24 = 0;
 
-            // Compare hours
-            int hourComparison = this.Hour.CompareTo(other.Hour);
-            if (hourComparison != 0)
-            {
-                return hourComparison;
-            }
+            // Convert the other time to 24-hour format
+            int otherHour24 = (other.Hour == 12 && other.AmPm == "PM") ? 12 : other.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
+            if (other.AmPm == "PM" && other.Hour != 12) otherHour24 += 12;
+            if (other.AmPm == "AM" && other.Hour == 12) otherHour24 = 0;
 
-            // Compare minutes
-            return this.Minute.CompareTo(other.Minute);
+            // Compare the hours
+            if (thisHour24 > otherHour24) return 1;
+            if (thisHour24 < otherHour24) return -1;
+
+            // If hours are the same, compare the minutes
+            if (this.Minute > other.Minute) return 1;
+            if (this.Minute < other.Minute) return -1;
+
+            // If both hours and minutes are the same, the times are equal
+            return 0;
         }
+
 
         // Equatable implementation
         public bool Equals(Time other)

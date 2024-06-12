@@ -80,6 +80,7 @@
             // dgvInstructors
             // 
             dgvInstructors.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            dgvInstructors.BackgroundColor = Color.Bisque;
             dgvInstructors.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgvInstructors.Location = new Point(30, 241);
             dgvInstructors.Name = "dgvInstructors";
@@ -92,6 +93,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Linen;
             ClientSize = new Size(709, 470);
             Controls.Add(dgvInstructors);
             Controls.Add(groupBox1);

@@ -95,30 +95,36 @@
             // btnLogin
             // 
             btnLogin.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnLogin.BackColor = Color.ForestGreen;
+            btnLogin.FlatStyle = FlatStyle.Flat;
             btnLogin.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnLogin.ForeColor = SystemColors.ButtonHighlight;
             btnLogin.Location = new Point(85, 349);
             btnLogin.Name = "btnLogin";
             btnLogin.Size = new Size(117, 41);
             btnLogin.TabIndex = 1;
             btnLogin.Text = "Login";
-            btnLogin.UseVisualStyleBackColor = true;
+            btnLogin.UseVisualStyleBackColor = false;
             btnLogin.Click += btnLogin_Click;
             // 
             // btnCancel
             // 
             btnCancel.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            btnCancel.BackColor = Color.OrangeRed;
+            btnCancel.FlatStyle = FlatStyle.Flat;
             btnCancel.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnCancel.ForeColor = SystemColors.ButtonHighlight;
             btnCancel.Location = new Point(277, 349);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(117, 41);
             btnCancel.TabIndex = 2;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // pictureBox1
             // 
-            pictureBox1.Image = DrivingSchoolManagementSystem.Properties.Resources.Login_Image;
+            pictureBox1.Image = Properties.Resources.Login_Image;
             pictureBox1.Location = new Point(-1, 42);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(479, 406);
@@ -126,17 +132,18 @@
             pictureBox1.TabIndex = 3;
             pictureBox1.TabStop = false;
             // 
-            // Form1
+            // frmLogin
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = Color.Linen;
             BackgroundImageLayout = ImageLayout.Zoom;
             ClientSize = new Size(477, 485);
             Controls.Add(btnCancel);
             Controls.Add(btnLogin);
             Controls.Add(groupBox1);
             Controls.Add(pictureBox1);
-            Name = "Form1";
+            Name = "frmLogin";
             Text = "Form1";
             Load += frmLogin_Load;
             groupBox1.ResumeLayout(false);

@@ -50,13 +50,13 @@ namespace DrivingSchoolManagementSystem
         public static int CalculateDurationInMinutes(Time startTime, Time endTime)
         {
             // Convert start time to 24-hour format minutes
-            int startHour24 = startTime.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
+            int startHour24 = (startTime.Hour == 12 && startTime.AmPm == "PM") ? 12 : startTime.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
             if (startTime.AmPm == "PM" && startTime.Hour != 12) startHour24 += 12;
             if (startTime.AmPm == "AM" && startTime.Hour == 12) startHour24 = 0;
             int startMinutes = startHour24 * 60 + startTime.Minute;
 
             // Convert end time to 24-hour format minutes
-            int endHour24 = endTime.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
+            int endHour24 = (endTime.Hour == 12 && endTime.AmPm == "PM") ? 12 : endTime.Hour % 12; // Convert 12 AM/PM to 0/12 for calculation
             if (endTime.AmPm == "PM" && endTime.Hour != 12) endHour24 += 12;
             if (endTime.AmPm == "AM" && endTime.Hour == 12) endHour24 = 0;
             int endMinutes = endHour24 * 60 + endTime.Minute;
@@ -83,6 +83,15 @@ namespace DrivingSchoolManagementSystem
 
             int _ = DataAccess.SendData(query);
         }
+
+        //public static void CancelLessonStudentFee(int lessonId, int studentId)
+        //{
+        //    string queryDuration = $@"SELECT LessonMinutesDuration FROM Lessons WHERE LessonID = {lessonId}";
+        //    int durationToDeduce = Convert.ToInt32(DataAccess.GetValue(queryDuration));
+        //    decimal feesToDeduce = CalculateCharge(durationToDeduce);
+        //    string queryFees = $@"UPDATE Students SET DueFees = DueFees - {feesToDeduce} WHERE StudentID = {studentId}";
+        //    int _ = DataAccess.SendData(queryFees);
+        //}
 
         public static int GetOldDuration(int lessonId)
         {

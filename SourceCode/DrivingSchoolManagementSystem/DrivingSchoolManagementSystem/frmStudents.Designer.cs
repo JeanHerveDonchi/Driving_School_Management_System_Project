@@ -73,7 +73,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label1.Location = new Point(368, 20);
+            label1.Location = new Point(364, 20);
             label1.Name = "label1";
             label1.Size = new Size(107, 32);
             label1.TabIndex = 0;
@@ -107,23 +107,23 @@
             grpStudents.Controls.Add(label2);
             grpStudents.Location = new Point(109, 55);
             grpStudents.Name = "grpStudents";
-            grpStudents.Size = new Size(620, 699);
+            grpStudents.Size = new Size(620, 591);
             grpStudents.TabIndex = 1;
             grpStudents.TabStop = false;
             grpStudents.Text = "Student Details";
             // 
             // txtDueFees
             // 
-            txtDueFees.Location = new Point(43, 648);
+            txtDueFees.Location = new Point(138, 537);
             txtDueFees.Name = "txtDueFees";
             txtDueFees.ReadOnly = true;
-            txtDueFees.Size = new Size(537, 23);
+            txtDueFees.Size = new Size(441, 23);
             txtDueFees.TabIndex = 26;
             // 
             // label12
             // 
             label12.AutoSize = true;
-            label12.Location = new Point(45, 629);
+            label12.Location = new Point(44, 542);
             label12.Name = "label12";
             label12.Size = new Size(57, 15);
             label12.TabIndex = 25;
@@ -131,7 +131,7 @@
             // 
             // txtLearnersLicenceNumber
             // 
-            txtLearnersLicenceNumber.Location = new Point(46, 486);
+            txtLearnersLicenceNumber.Location = new Point(45, 400);
             txtLearnersLicenceNumber.Name = "txtLearnersLicenceNumber";
             txtLearnersLicenceNumber.Size = new Size(534, 23);
             txtLearnersLicenceNumber.TabIndex = 24;
@@ -140,7 +140,7 @@
             // label10
             // 
             label10.AutoSize = true;
-            label10.Location = new Point(45, 468);
+            label10.Location = new Point(43, 382);
             label10.Name = "label10";
             label10.Size = new Size(143, 15);
             label10.TabIndex = 23;
@@ -149,7 +149,7 @@
             // chkHasLearnersLicence
             // 
             chkHasLearnersLicence.AutoSize = true;
-            chkHasLearnersLicence.Location = new Point(48, 437);
+            chkHasLearnersLicence.Location = new Point(173, 348);
             chkHasLearnersLicence.Name = "chkHasLearnersLicence";
             chkHasLearnersLicence.Size = new Size(15, 14);
             chkHasLearnersLicence.TabIndex = 22;
@@ -158,16 +158,16 @@
             // 
             // txtAge
             // 
-            txtAge.Location = new Point(46, 538);
+            txtAge.Location = new Point(140, 446);
             txtAge.Name = "txtAge";
             txtAge.ReadOnly = true;
-            txtAge.Size = new Size(534, 23);
+            txtAge.Size = new Size(440, 23);
             txtAge.TabIndex = 21;
             // 
             // Age
             // 
             Age.AutoSize = true;
-            Age.Location = new Point(46, 520);
+            Age.Location = new Point(46, 449);
             Age.Name = "Age";
             Age.Size = new Size(31, 15);
             Age.TabIndex = 20;
@@ -175,18 +175,19 @@
             // 
             // txtAddress
             // 
-            txtAddress.Location = new Point(43, 593);
+            txtAddress.Location = new Point(139, 491);
             txtAddress.Name = "txtAddress";
             txtAddress.PlaceholderText = "St Number. St Name. (Appt No)";
-            txtAddress.Size = new Size(537, 23);
+            txtAddress.Size = new Size(440, 23);
             txtAddress.TabIndex = 19;
             txtAddress.Tag = "Address";
+            txtAddress.TextChanged += txtAddress_TextChanged;
             txtAddress.Validating += txt_Validating;
             // 
             // label11
             // 
             label11.AutoSize = true;
-            label11.Location = new Point(46, 575);
+            label11.Location = new Point(46, 494);
             label11.Name = "label11";
             label11.Size = new Size(52, 15);
             label11.TabIndex = 18;
@@ -195,7 +196,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(43, 419);
+            label9.Location = new Point(43, 347);
             label9.Name = "label9";
             label9.Size = new Size(120, 15);
             label9.TabIndex = 14;
@@ -203,10 +204,10 @@
             // 
             // txtEmail
             // 
-            txtEmail.Location = new Point(43, 384);
+            txtEmail.Location = new Point(140, 300);
             txtEmail.Name = "txtEmail";
             txtEmail.PlaceholderText = "email@example.domain";
-            txtEmail.Size = new Size(537, 23);
+            txtEmail.Size = new Size(440, 23);
             txtEmail.TabIndex = 13;
             txtEmail.Tag = "Email";
             txtEmail.Validating += txt_Validating;
@@ -214,7 +215,7 @@
             // label8
             // 
             label8.AutoSize = true;
-            label8.Location = new Point(43, 366);
+            label8.Location = new Point(43, 303);
             label8.Name = "label8";
             label8.Size = new Size(39, 15);
             label8.TabIndex = 12;
@@ -222,7 +223,7 @@
             // 
             // dteAdmission
             // 
-            dteAdmission.Location = new Point(43, 273);
+            dteAdmission.Location = new Point(140, 203);
             dteAdmission.MinDate = new DateTime(2016, 1, 1, 0, 0, 0, 0);
             dteAdmission.Name = "dteAdmission";
             dteAdmission.Size = new Size(200, 23);
@@ -233,17 +234,17 @@
             // label7
             // 
             label7.AutoSize = true;
-            label7.Location = new Point(43, 255);
+            label7.Location = new Point(43, 209);
             label7.Name = "label7";
-            label7.Size = new Size(90, 15);
+            label7.Size = new Size(93, 15);
             label7.TabIndex = 10;
-            label7.Text = "Admission Date";
+            label7.Text = "Admission Date:";
             // 
             // txtPhone
             // 
-            txtPhone.Location = new Point(43, 328);
+            txtPhone.Location = new Point(140, 251);
             txtPhone.Name = "txtPhone";
-            txtPhone.Size = new Size(537, 23);
+            txtPhone.Size = new Size(440, 23);
             txtPhone.TabIndex = 9;
             txtPhone.Tag = "Phone Number";
             txtPhone.Validating += txt_Validating;
@@ -251,7 +252,7 @@
             // label6
             // 
             label6.AutoSize = true;
-            label6.Location = new Point(43, 310);
+            label6.Location = new Point(43, 254);
             label6.Name = "label6";
             label6.Size = new Size(91, 15);
             label6.TabIndex = 8;
@@ -259,7 +260,7 @@
             // 
             // dteBirth
             // 
-            dteBirth.Location = new Point(43, 217);
+            dteBirth.Location = new Point(140, 157);
             dteBirth.MaxDate = new DateTime(2146, 12, 31, 0, 0, 0, 0);
             dteBirth.MinDate = new DateTime(1964, 1, 1, 0, 0, 0, 0);
             dteBirth.Name = "dteBirth";
@@ -272,7 +273,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(43, 199);
+            label5.Location = new Point(43, 163);
             label5.Name = "label5";
             label5.Size = new Size(78, 15);
             label5.TabIndex = 6;
@@ -280,9 +281,9 @@
             // 
             // txtLastName
             // 
-            txtLastName.Location = new Point(43, 161);
+            txtLastName.Location = new Point(140, 110);
             txtLastName.Name = "txtLastName";
-            txtLastName.Size = new Size(537, 23);
+            txtLastName.Size = new Size(440, 23);
             txtLastName.TabIndex = 5;
             txtLastName.Tag = "Last Name";
             txtLastName.Validating += txt_Validating;
@@ -290,7 +291,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(43, 143);
+            label4.Location = new Point(43, 113);
             label4.Name = "label4";
             label4.Size = new Size(66, 15);
             label4.TabIndex = 4;
@@ -298,9 +299,9 @@
             // 
             // txtFirstName
             // 
-            txtFirstName.Location = new Point(43, 104);
+            txtFirstName.Location = new Point(140, 65);
             txtFirstName.Name = "txtFirstName";
-            txtFirstName.Size = new Size(537, 23);
+            txtFirstName.Size = new Size(440, 23);
             txtFirstName.TabIndex = 3;
             txtFirstName.Tag = "First Name";
             txtFirstName.Validating += txt_Validating;
@@ -308,7 +309,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(43, 86);
+            label3.Location = new Point(43, 68);
             label3.Name = "label3";
             label3.Size = new Size(67, 15);
             label3.TabIndex = 2;
@@ -316,16 +317,16 @@
             // 
             // txtId
             // 
-            txtId.Location = new Point(43, 51);
+            txtId.Location = new Point(141, 25);
             txtId.Name = "txtId";
             txtId.ReadOnly = true;
-            txtId.Size = new Size(537, 23);
+            txtId.Size = new Size(65, 23);
             txtId.TabIndex = 1;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Location = new Point(43, 33);
+            label2.Location = new Point(46, 28);
             label2.Name = "label2";
             label2.Size = new Size(20, 15);
             label2.TabIndex = 0;
@@ -333,92 +334,119 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(135, 776);
+            btnAdd.BackColor = Color.ForestGreen;
+            btnAdd.FlatStyle = FlatStyle.Flat;
+            btnAdd.ForeColor = SystemColors.ButtonHighlight;
+            btnAdd.Location = new Point(136, 664);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(75, 33);
             btnAdd.TabIndex = 2;
             btnAdd.Text = "Add";
-            btnAdd.UseVisualStyleBackColor = true;
+            btnAdd.UseVisualStyleBackColor = false;
             btnAdd.Click += btnAdd_Click;
             // 
             // btnDelete
             // 
-            btnDelete.Location = new Point(260, 777);
+            btnDelete.BackColor = Color.OrangeRed;
+            btnDelete.FlatStyle = FlatStyle.Flat;
+            btnDelete.ForeColor = SystemColors.ButtonHighlight;
+            btnDelete.Location = new Point(261, 665);
             btnDelete.Name = "btnDelete";
             btnDelete.Size = new Size(75, 33);
             btnDelete.TabIndex = 3;
             btnDelete.Text = "Delete";
-            btnDelete.UseVisualStyleBackColor = true;
+            btnDelete.UseVisualStyleBackColor = false;
             btnDelete.Click += btnDelete_Click;
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(382, 777);
+            btnSave.BackColor = Color.Orange;
+            btnSave.FlatStyle = FlatStyle.Flat;
+            btnSave.ForeColor = SystemColors.ButtonHighlight;
+            btnSave.Location = new Point(383, 665);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(75, 32);
             btnSave.TabIndex = 4;
             btnSave.Text = "Update";
-            btnSave.UseVisualStyleBackColor = true;
+            btnSave.UseVisualStyleBackColor = false;
             btnSave.Click += btnSave_Click;
             // 
             // btnExit
             // 
-            btnExit.Location = new Point(628, 778);
+            btnExit.BackColor = Color.LightSeaGreen;
+            btnExit.FlatStyle = FlatStyle.Flat;
+            btnExit.ForeColor = SystemColors.ButtonHighlight;
+            btnExit.Location = new Point(629, 666);
             btnExit.Name = "btnExit";
             btnExit.Size = new Size(75, 32);
             btnExit.TabIndex = 5;
             btnExit.Text = "Exit";
-            btnExit.UseVisualStyleBackColor = true;
+            btnExit.UseVisualStyleBackColor = false;
             btnExit.Click += btnExit_Click;
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(502, 778);
+            btnCancel.BackColor = Color.DarkCyan;
+            btnCancel.FlatStyle = FlatStyle.Flat;
+            btnCancel.ForeColor = SystemColors.ButtonHighlight;
+            btnCancel.Location = new Point(503, 666);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(75, 32);
             btnCancel.TabIndex = 6;
             btnCancel.Text = "Cancel";
-            btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.UseVisualStyleBackColor = false;
             btnCancel.Click += btnCancel_Click;
             // 
             // btnFirst
             // 
-            btnFirst.Location = new Point(274, 840);
+            btnFirst.BackColor = Color.CornflowerBlue;
+            btnFirst.FlatStyle = FlatStyle.Flat;
+            btnFirst.ForeColor = SystemColors.ButtonHighlight;
+            btnFirst.Location = new Point(266, 722);
             btnFirst.Name = "btnFirst";
             btnFirst.Size = new Size(41, 32);
             btnFirst.TabIndex = 7;
             btnFirst.Text = "<<";
-            btnFirst.UseVisualStyleBackColor = true;
+            btnFirst.UseVisualStyleBackColor = false;
             btnFirst.Click += Navigation_Handler;
             // 
             // btnPrevious
             // 
-            btnPrevious.Location = new Point(346, 840);
+            btnPrevious.BackColor = Color.CornflowerBlue;
+            btnPrevious.FlatStyle = FlatStyle.Flat;
+            btnPrevious.ForeColor = SystemColors.ButtonHighlight;
+            btnPrevious.Location = new Point(338, 722);
             btnPrevious.Name = "btnPrevious";
             btnPrevious.Size = new Size(41, 32);
             btnPrevious.TabIndex = 8;
             btnPrevious.Text = "<";
-            btnPrevious.UseVisualStyleBackColor = true;
+            btnPrevious.UseVisualStyleBackColor = false;
             btnPrevious.Click += Navigation_Handler;
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(425, 840);
+            btnNext.BackColor = Color.CornflowerBlue;
+            btnNext.FlatStyle = FlatStyle.Flat;
+            btnNext.ForeColor = SystemColors.ButtonHighlight;
+            btnNext.Location = new Point(417, 722);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(41, 32);
             btnNext.TabIndex = 9;
             btnNext.Text = ">";
-            btnNext.UseVisualStyleBackColor = true;
+            btnNext.UseVisualStyleBackColor = false;
             btnNext.Click += Navigation_Handler;
             // 
             // btnLast
             // 
-            btnLast.Location = new Point(502, 840);
+            btnLast.BackColor = Color.CornflowerBlue;
+            btnLast.FlatStyle = FlatStyle.Flat;
+            btnLast.ForeColor = SystemColors.ControlLightLight;
+            btnLast.Location = new Point(494, 722);
             btnLast.Name = "btnLast";
             btnLast.Size = new Size(41, 32);
             btnLast.TabIndex = 10;
             btnLast.Text = ">>";
-            btnLast.UseVisualStyleBackColor = true;
+            btnLast.UseVisualStyleBackColor = false;
             btnLast.Click += Navigation_Handler;
             // 
             // errorProvider1
@@ -429,7 +457,8 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(845, 908);
+            BackColor = Color.Linen;
+            ClientSize = new Size(845, 785);
             Controls.Add(btnLast);
             Controls.Add(btnNext);
             Controls.Add(btnPrevious);

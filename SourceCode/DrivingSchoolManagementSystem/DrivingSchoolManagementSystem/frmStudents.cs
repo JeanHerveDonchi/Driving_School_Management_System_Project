@@ -199,7 +199,7 @@ namespace DrivingSchoolManagementSystem
                 if (chkHasLearnersLicence.Enabled)
                 {
                     txtLearnersLicenceNumber.ReadOnly = false;
-                }    
+                }
             }
             else
             {
@@ -256,8 +256,8 @@ namespace DrivingSchoolManagementSystem
             chkHasLearnersLicence.Enabled = !v;
             if (!v)
             {
-                txtLearnersLicenceNumber.ReadOnly = !chkHasLearnersLicence.Checked; 
-            }        
+                txtLearnersLicenceNumber.ReadOnly = !chkHasLearnersLicence.Checked;
+            }
             //txtAge.ReadOnly = v;
             txtAddress.ReadOnly = v;
         }
@@ -392,8 +392,8 @@ namespace DrivingSchoolManagementSystem
                             LearnersLicenceNumber, age, address
                             )
                         VALUES (
-                                '{txtFirstName.Text.Trim()}',
-                                '{txtLastName.Text.Trim()}',
+                                '{DataAccess.SQLFix(txtFirstName.Text.Trim())}',
+                                '{DataAccess.SQLFix(txtLastName.Text.Trim())}',
                                 '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
                                 {BoolToBinaryInt(chkHasLearnersLicence.Checked)},
                                 '{dteAdmission.Value.Year}-{dteAdmission.Value.Month}-{dteAdmission.Value.Day}',
@@ -401,7 +401,7 @@ namespace DrivingSchoolManagementSystem
                                 '{txtEmail.Text}',
                                 {txtLearnersLicenceNumber.Text},
                                 {age},
-                                '{txtAddress.Text}'
+                                '{DataAccess.SQLFix(txtAddress.Text)}'
                                 )";
             int rowsAffected = DataAccess.SendData(sqlInsertStudents);
 
@@ -430,8 +430,8 @@ namespace DrivingSchoolManagementSystem
                 return;
             }
             string sqlUpdateStudent = $@"UPDATE Students
-                        SET FirstName = '{txtFirstName.Text.Trim()}', 
-                            LastName = '{txtLastName.Text.Trim()}', 
+                        SET FirstName = '{DataAccess.SQLFix(txtFirstName.Text.Trim())}', 
+                            LastName = '{DataAccess.SQLFix(txtLastName.Text.Trim())}', 
                             DateOfBirth = '{dteBirth.Value.Year}-{dteBirth.Value.Month}-{dteBirth.Value.Day}',
                             HasLearnersLicence = {BoolToBinaryInt(chkHasLearnersLicence.Checked)},
                             AdmissionDate = '{dteAdmission.Value.Year}-{dteAdmission.Value.Month}-{dteAdmission.Value.Day}', 
@@ -439,7 +439,7 @@ namespace DrivingSchoolManagementSystem
                             Email = '{txtEmail.Text}', 
                             LearnersLicenceNumber = {txtLearnersLicenceNumber.Text}, 
                             Age = {age}, 
-                            Address = '{txtAddress.Text}'
+                            Address = '{DataAccess.SQLFix(txtAddress.Text)}'
                         WHERE StudentID = {txtId.Text}";
 
 
@@ -538,41 +538,44 @@ namespace DrivingSchoolManagementSystem
         {
             string errorMessage = string.Empty;
             TextBox textBox = (TextBox)sender;
-            if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
+            if (!textBox.ReadOnly || textBox.Enabled)
             {
-                errorMessage = $"{textBox.Tag} is required.";
-                e.Cancel = true;
-            }
+                if (!Validator.IsNotNullOrWhiteSpace(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is required.";
+                    e.Cancel = true;
+                }
 
-            if ((sender == txtFirstName || sender == txtLastName) && !Validator.ValidateName(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid (a valid name must start with an uppercase letter and can only contain" +
-                    $" letters, spaces, hyphens, and apostrophes).";
-                e.Cancel = true;
+                if ((sender == txtFirstName || sender == txtLastName) && !Validator.ValidateName(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (a valid name must start with an uppercase letter and can only contain" +
+                        $" letters, spaces, hyphens, and apostrophes).";
+                    e.Cancel = true;
+                }
+                if (sender == txtPhone && !Validator.ValidatePhoneNumber(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (must be a 10 digit number without special characters or spaces, " +
+                        $"must start with area code in {BusinessRulesConstants.COUNTRY}).";
+                    e.Cancel = true;
+                }
+                if (sender == txtEmail && !Validator.ValidateEmail(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not valid email, please retry.";
+                    e.Cancel = true;
+                }
+                if (sender == txtLearnersLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text) && chkHasLearnersLicence.Checked)
+                {
+                    errorMessage = $"{textBox.Tag} is not valid (must be a 8 digit number without special characters or spaces).";
+                    e.Cancel = true;
+                }
+                if (sender == txtAddress && !Validator.ValidateAddress(textBox.Text))
+                {
+                    errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
+                        $" (Appt No. is optional) - city and province can be added";
+                    e.Cancel = true;
+                }
+                errorProvider1.SetError(textBox, errorMessage); 
             }
-            if (sender == txtPhone && !Validator.ValidatePhoneNumber(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid (must be a 10 digit number without special characters or spaces, " +
-                    $"must start with area code in {BusinessRulesConstants.COUNTRY}).";
-                e.Cancel = true;
-            }
-            if (sender == txtEmail && !Validator.ValidateEmail(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not valid email, please retry.";
-                e.Cancel = true;
-            }
-            if (sender == txtLearnersLicenceNumber && !Validator.ValidateLicenceNumber(textBox.Text) && chkHasLearnersLicence.Checked)
-            {
-                errorMessage = $"{textBox.Tag} is not valid (must be a 8 digit number without special characters or spaces).";
-                e.Cancel = true;
-            }
-            if (sender == txtAddress && !Validator.ValidateAddress(textBox.Text))
-            {
-                errorMessage = $"{textBox.Tag} is not a valid addres, address should be in format \'St Name. St. Address. Appt. No\'." +
-                    $" (Appt No. is optional) - city and province can be added";
-                e.Cancel = true;
-            }
-            errorProvider1.SetError(textBox, errorMessage);
         }
 
         private void dte_Validating(object sender, CancelEventArgs e)
@@ -581,9 +584,9 @@ namespace DrivingSchoolManagementSystem
             DateTimePicker dateTime = (DateTimePicker)sender;
             if (sender == dteAdmission && !Validator.ValidateAdmissionDate(dteAdmission.Value))
             {
-               errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date or " +
-                    $"less than Year {BusinessRulesConstants.SCHOOL_HIRE_START_YEAR}.";
-               e.Cancel = true;
+                errorMessage = $"{dateTime.Tag} is not valid, cannot be more than actual date or " +
+                     $"less than Year {BusinessRulesConstants.SCHOOL_HIRE_START_YEAR}.";
+                e.Cancel = true;
             }
             if (sender == dteBirth)
             {
@@ -593,7 +596,7 @@ namespace DrivingSchoolManagementSystem
                     //this would not normally happen
                     errorMessage = $"{dateTime.Tag} is not valid, a Student must be atleast " +
                         $"{BusinessRulesConstants.MINIMUM_STUDENT_AGE} years of age.";
-                   e.Cancel = true;
+                    e.Cancel = true;
                 }
 
             }
@@ -649,6 +652,9 @@ namespace DrivingSchoolManagementSystem
 
         #endregion
 
+        private void txtAddress_TextChanged(object sender, EventArgs e)
+        {
 
+        }
     }
 }
